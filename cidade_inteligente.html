@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A Cidade Inteligente · Prancha Nº 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,700;1,400&family=Archivo+Black&family=DM+Serif+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#EFE5CE; --paperDark:#DDD0B0; --ink:#1A1611;
+  --brick:#A8412A; --mustard:#C89339; --blue:#577387;
+  --olive:#5B6B3F; --bone:#F7EFD9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;}
+
+/* ─── UTILITIES ─── */
+.hidden{display:none!important;}
+.visivel{display:block;}
+
+/* ─── PROLOGUE ─── */
+#prologue{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+}
+.prol-screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:32px;
+  opacity:0;pointer-events:none;transition:opacity .5s ease;
+}
+.prol-screen.active{opacity:1;pointer-events:all;}
+.prol-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(26,22,17,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(26,22,17,.08) 1px,transparent 1px);
+  background-size:20px 20px;pointer-events:none;
+}
+.prol-stamp{
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:3px;
+  color:var(--brick);border:1.5px solid var(--brick);padding:4px 10px;
+  margin-bottom:20px;
+}
+.prol-h1{
+  font-family:'Archivo Black',sans-serif;font-size:clamp(22px,4vw,42px);
+  color:var(--ink);letter-spacing:4px;line-height:1.05;
+  text-align:center;margin-bottom:12px;max-width:600px;
+}
+.prol-sub{
+  font-size:11px;letter-spacing:2px;color:var(--ink);opacity:.65;
+  margin-bottom:36px;text-align:center;
+}
+.prol-btn{
+  font-family:'Archivo Black',sans-serif;font-size:12px;letter-spacing:3px;
+  color:var(--bone);background:var(--ink);border:2px solid var(--ink);
+  padding:12px 28px;cursor:pointer;transition:background .2s,color .2s;
+}
+.prol-btn:hover{background:var(--brick);border-color:var(--brick);}
+.prol-btn.ghost{
+  background:transparent;color:var(--ink);
+}
+.prol-btn.ghost:hover{background:var(--ink);color:var(--bone);}
+
+.prol-form{
+  background:var(--bone);border:2px solid var(--ink);
+  box-shadow:8px 8px 0 var(--ink);
+  max-width:560px;width:100%;
+}
+.prol-form-header{
+  background:var(--ink);color:var(--bone);padding:12px 20px;
+  font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:3px;
+}
+.prol-form-body{padding:20px 24px;}
+.prol-form-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid var(--paperDark);padding:8px 0;
+  font-size:12px;color:var(--ink);
+}
+.prol-form-row:last-child{border-bottom:none;}
+.prol-form-key{opacity:.6;letter-spacing:.5px;flex:1;}
+.prol-form-val{font-family:'Archivo Black',sans-serif;font-size:12px;}
+.prol-form-val.highlight{color:var(--brick);}
+.prol-form-footer{
+  border-top:2px solid var(--ink);padding:12px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.prol-checkbox-label{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  font-size:11px;color:var(--ink);letter-spacing:.5px;
+}
+.prol-checkbox{
+  width:16px;height:16px;border:1.5px solid var(--ink);
+  appearance:none;cursor:pointer;flex-shrink:0;
+  background:var(--bone);
+}
+.prol-checkbox:checked{background:var(--ink);}
+
+.prol-reveal-list{
+  background:var(--bone);border:2px solid var(--ink);
+  box-shadow:8px 8px 0 var(--ink);
+  max-width:520px;width:100%;padding:0;overflow:hidden;
+}
+.prol-reveal-head{
+  background:var(--brick);color:var(--bone);
+  padding:14px 24px;
+  font-family:'Arquivo Black',sans-serif;font-size:10px;letter-spacing:3px;
+}
+.prol-reveal-item{
+  display:flex;align-items:baseline;gap:10px;
+  padding:10px 24px;border-bottom:1px solid var(--paperDark);
+  font-size:13px;color:var(--ink);
+  opacity:0;transform:translateX(-10px);
+  transition:opacity .35s ease,transform .35s ease;
+}
+.prol-reveal-item.show{opacity:1;transform:none;}
+.prol-reveal-item .ri-icon{color:var(--brick);font-family:'Archivo Black',sans-serif;font-size:11px;flex-shrink:0;}
+.prol-reveal-item.red{color:var(--brick);}
+.prol-reveal-msg{
+  padding:16px 24px;
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:15px;color:var(--ink);line-height:1.4;
+  border-top:2px solid var(--ink);
+  opacity:0;transition:opacity .5s ease .1s;
+}
+.prol-reveal-msg.show{opacity:1;}
+
+/* ─── APP ─── */
+#app{display:flex;flex-direction:column;min-height:100vh;}
+
+header{
+  border-bottom:2px solid var(--ink);background:var(--bone);
+  padding:10px 18px;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.header-left{display:flex;align-items:center;gap:14px;}
+.header-icon{
+  width:44px;height:44px;background:var(--brick);border:2px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--bone);font-family:'Archivo Black',sans-serif;flex-shrink:0;
+}
+.header-title{font-family:'Archivo Black',sans-serif;font-size:16px;letter-spacing:4px;color:var(--ink);line-height:1.05;}
+.header-sub{font-size:9px;letter-spacing:2px;color:var(--ink);opacity:.7;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+.leg-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.leg-label{font-size:8px;letter-spacing:2px;color:var(--ink);opacity:.7;text-align:right;}
+.leg-bar-track{width:110px;height:6px;background:var(--paperDark);border:1px solid var(--ink);}
+.leg-bar-fill{height:100%;background:var(--brick);width:0%;transition:width .6s ease;}
+.leg-status{
+  font-family:'Archivo Black',sans-serif;font-size:8px;letter-spacing:1.5px;
+  color:var(--ink);text-align:right;min-width:110px;
+}
+.leg-status.alert{color:var(--brick);}
+
+.header-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;border:1.5px solid var(--ink);
+  background:transparent;cursor:pointer;
+  font-family:'Archivo Black',sans-serif;font-size:9px;
+  letter-spacing:2px;color:var(--ink);
+  transition:background .2s;
+  position:relative;
+}
+.header-btn:hover{background:var(--paperDark);}
+.caderneta-badge{
+  position:absolute;top:-6px;right:-6px;
+  width:16px;height:16px;background:var(--brick);border:1px solid var(--ink);
+  font-family:'Archivo Black',sans-serif;font-size:8px;color:var(--bone);
+  display:flex;align-items:center;justify-content:center;
+  display:none;
+}
+.caderneta-badge.show{display:flex;}
+
+main{flex:1;position:relative;}
+.map-wrapper{width:100%;position:relative;}
+.map-wrapper svg{width:100%;height:auto;display:block;}
+.hotspot{cursor:pointer;}
+
+footer{
+  border-top:2px solid var(--ink);background:var(--paperDark);
+  padding:9px 18px;display:flex;flex-wrap:wrap;
+  align-items:center;gap:10px 16px;
+}
+.footer-label{font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:2.5px;color:var(--ink);white-space:nowrap;}
+.footer-btns{display:flex;flex-wrap:wrap;gap:5px;}
+.vinheta-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:3px 7px;border:1.5px solid var(--ink);
+  background:transparent;cursor:pointer;opacity:.55;
+  transition:opacity .2s,background .2s;font-family:inherit;
+}
+.vinheta-btn.visited{opacity:1;}
+.vinheta-btn.completed{box-shadow:inset 0 0 0 1px var(--ink);}
+.vinheta-btn .btn-num{font-family:'Archivo Black',sans-serif;font-size:9px;color:var(--ink);}
+.vinheta-btn.visited .btn-num{color:var(--bone);}
+.vinheta-btn .btn-title{font-size:8px;letter-spacing:.8px;color:var(--ink);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vinheta-btn.visited .btn-title{color:var(--bone);}
+.footer-count{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.count-label{font-size:9px;letter-spacing:1.5px;color:var(--ink);opacity:.7;}
+.count-num{font-family:'Archivo Black',sans-serif;font-size:14px;color:var(--ink);}
+
+/* ─── MODAL ─── */
+#modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,22,17,.55);z-index:200;
+  align-items:center;justify-content:center;padding:12px;
+}
+#modal-overlay.show{display:flex;}
+.modal-card{
+  background:var(--bone);border:2px solid var(--ink);
+  box-shadow:12px 12px 0 var(--ink);width:100%;
+  max-width:660px;max-height:90vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 18px;border-bottom:2px solid var(--ink);flex-shrink:0;
+}
+.modal-header-left{display:flex;align-items:center;gap:10px;}
+.modal-num{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:var(--bone);border:1.5px solid var(--ink);
+  font-family:'Archivo Black',sans-serif;font-size:14px;color:var(--ink);flex-shrink:0;
+}
+.modal-titulo{font-family:'Archivo Black',sans-serif;font-size:12px;letter-spacing:2px;color:var(--bone);line-height:1.1;}
+.modal-subtitulo{font-size:9px;letter-spacing:1.5px;color:var(--bone);opacity:.85;margin-top:2px;}
+.modal-close{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:var(--bone);border:1.5px solid var(--ink);
+  font-family:'Archivo Black',sans-serif;font-size:17px;color:var(--ink);
+  cursor:pointer;transition:transform .2s;flex-shrink:0;
+}
+.modal-close:hover{transform:rotate(90deg);}
+
+.modal-phase{display:none;flex-direction:column;flex:1;}
+.modal-phase.active{display:flex;}
+.modal-body{padding:22px 26px;flex:1;}
+.modal-cena{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:19px;line-height:1.3;margin-bottom:14px;padding-left:12px;
+}
+.modal-paragraphs p{font-size:13px;color:var(--ink);line-height:1.55;margin-bottom:10px;}
+.modal-asterisco{font-size:10px;color:var(--ink);opacity:.65;margin-top:12px;line-height:1.4;font-style:italic;}
+.modal-rodape{margin-top:16px;padding-top:10px;border-top:1px solid var(--ink);font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:2px;}
+.modal-nav{
+  padding:12px 26px;border-top:1.5px solid var(--ink);
+  display:flex;justify-content:flex-end;flex-shrink:0;
+  gap:8px;
+}
+.modal-nav-btn{
+  font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:2px;
+  padding:9px 20px;border:1.5px solid var(--ink);background:var(--ink);
+  color:var(--bone);cursor:pointer;transition:background .2s;
+}
+.modal-nav-btn:hover{background:var(--brick);border-color:var(--brick);}
+.modal-nav-btn.secondary{background:transparent;color:var(--ink);}
+.modal-nav-btn.secondary:hover{background:var(--paperDark);border-color:var(--ink);}
+
+/* ─── CHALLENGE ─── */
+.challenge-body{padding:22px 26px;flex:1;}
+.ch-header{
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:3px;
+  color:var(--brick);margin-bottom:8px;
+}
+.ch-instrucao{
+  font-size:12px;color:var(--ink);line-height:1.5;
+  margin-bottom:18px;border-left:3px solid var(--ink);padding-left:10px;
+}
+
+.ch-opcoes{display:flex;flex-direction:column;gap:8px;margin-bottom:0;}
+.ch-opcao-btn{
+  display:flex;flex-direction:column;align-items:flex-start;
+  padding:12px 16px;border:1.5px solid var(--ink);
+  background:var(--bone);cursor:pointer;text-align:left;
+  transition:background .15s,border-color .15s;font-family:inherit;
+}
+.ch-opcao-btn:hover{background:var(--paperDark);}
+.ch-opcao-btn.selected{background:var(--ink);border-color:var(--ink);}
+.ch-opcao-btn.selected .ch-opt-label{color:var(--bone);}
+.ch-opcao-btn.selected .ch-opt-sub{color:var(--bone);opacity:.7;}
+.ch-opt-label{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--ink);}
+.ch-opt-sub{font-size:10px;color:var(--ink);opacity:.6;margin-top:2px;}
+
+.ch-faces{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.ch-face-card{
+  border:1.5px solid var(--ink);padding:12px 8px;
+  background:var(--bone);cursor:pointer;text-align:center;
+  transition:background .15s;
+}
+.ch-face-card:hover{background:var(--paperDark);}
+.ch-face-card.selected{background:var(--brick);border-color:var(--brick);}
+.ch-face-svg{margin:0 auto 8px;}
+.ch-face-id{font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:2px;color:var(--ink);}
+.ch-face-card.selected .ch-face-id{color:var(--bone);}
+.ch-face-score{font-family:'Archivo Black',sans-serif;font-size:18px;color:var(--brick);margin-top:4px;}
+.ch-face-card.selected .ch-face-score{color:var(--bone);}
+.ch-face-sub{font-size:8px;letter-spacing:1px;color:var(--ink);opacity:.6;margin-top:2px;}
+.ch-face-card.selected .ch-face-sub{color:var(--bone);opacity:.8;}
+
+.ch-timer-track{
+  height:5px;background:var(--paperDark);border:1px solid var(--ink);
+  margin-bottom:12px;overflow:hidden;
+}
+.ch-timer-fill{
+  height:100%;background:var(--brick);width:100%;
+  transition:width 45s linear;
+}
+.ch-timer-label{font-size:9px;letter-spacing:1.5px;color:var(--ink);opacity:.6;margin-bottom:12px;}
+.ch-contract-text{
+  font-size:11px;color:var(--ink);line-height:1.7;
+  background:var(--paper);border:1px solid var(--paperDark);
+  padding:14px;max-height:200px;overflow-y:auto;
+  border-left:3px solid var(--paperDark);
+}
+.ch-contract-text span.clause{
+  background:rgba(168,65,42,.12);border-bottom:1.5px solid var(--brick);
+  cursor:pointer;transition:background .15s;
+}
+.ch-contract-text span.clause:hover{background:rgba(168,65,42,.25);}
+.ch-contract-text span.clause.found{
+  background:var(--brick);color:var(--bone);border-bottom-color:var(--brick);
+}
+.ch-found-count{font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:2px;color:var(--ink);margin-top:10px;}
+
+.ch-nodes{display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px;}
+.ch-node{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+.ch-node-box{
+  width:100px;border:1.5px solid var(--ink);padding:10px 8px;
+  background:var(--bone);cursor:pointer;text-align:center;
+  transition:background .15s;
+}
+.ch-node-box:hover{background:var(--paperDark);}
+.ch-node-box.active{background:var(--ink);}
+.ch-node-box.active .ch-node-loc{color:var(--bone);}
+.ch-node-box.active .ch-node-ms{color:var(--mustard);}
+.ch-node-box.active .ch-node-click{color:var(--bone);opacity:.7;}
+.ch-node-box.locked{opacity:.35;cursor:not-allowed;}
+.ch-node-loc{font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:1px;color:var(--ink);line-height:1.2;}
+.ch-node-ms{font-size:10px;color:var(--brick);margin-top:3px;}
+.ch-node-click{font-size:8px;letter-spacing:1px;color:var(--ink);opacity:.5;margin-top:4px;}
+.ch-node-arrow{
+  width:24px;height:2px;background:var(--ink);flex-shrink:0;
+  position:relative;align-self:center;margin-top:-10px;
+}
+.ch-node-arrow::after{
+  content:'';position:absolute;right:-5px;top:-4px;
+  border:5px solid transparent;border-left:8px solid var(--ink);
+}
+.ch-node-fact{
+  font-size:10px;color:var(--ink);line-height:1.45;
+  background:var(--paper);border:1px solid var(--paperDark);
+  border-left:2px solid var(--brick);padding:8px 12px;
+  margin-top:14px;
+}
+.ch-node-fact strong{font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:1.5px;display:block;margin-bottom:4px;color:var(--brick);}
+
+.ch-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
+.ch-metric-opt{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border:1.5px solid var(--ink);
+  background:var(--bone);cursor:pointer;
+  transition:background .15s;
+}
+.ch-metric-opt:hover{background:var(--paperDark);}
+.ch-metric-opt.selected{background:var(--olive);}
+.ch-metric-opt.selected .ch-metric-label{color:var(--bone);}
+.ch-metric-cb{
+  width:12px;height:12px;border:1.5px solid var(--ink);
+  flex-shrink:0;background:var(--bone);
+}
+.ch-metric-opt.selected .ch-metric-cb{background:var(--bone);}
+.ch-metric-label{font-size:10px;letter-spacing:.5px;color:var(--ink);}
+.ch-report-result{
+  display:none;background:var(--ink);color:var(--bone);
+  padding:16px;text-align:center;margin-top:10px;
+}
+.ch-report-result.show{display:block;}
+.ch-report-num{font-family:'Archivo Black',sans-serif;font-size:48px;color:var(--mustard);}
+.ch-report-label{font-size:10px;letter-spacing:2px;opacity:.8;margin-top:4px;}
+.ch-report-note{font-size:9px;opacity:.5;margin-top:8px;font-style:italic;}
+
+.ch-map-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:2px;margin-bottom:12px;
+}
+.ch-map-cell{
+  aspect-ratio:1;border:1px solid var(--paperDark);
+  background:var(--paperDark);transition:background .4s;
+  position:relative;cursor:default;
+}
+.ch-map-cell.green{background:rgba(91,107,63,.55);}
+.ch-map-cell.red{background:rgba(168,65,42,.45);}
+.ch-map-cell.red-strong{background:rgba(168,65,42,.75);}
+.ch-map-cell .cell-pct{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:7px;font-family:'Archivo Black',sans-serif;color:var(--bone);
+  opacity:0;transition:opacity .3s;
+}
+.ch-map-cell.show-pct .cell-pct{opacity:1;}
+.ch-map-layers{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.ch-layer-btn{
+  font-family:'Archivo Black',sans-serif;font-size:8px;letter-spacing:1.5px;
+  padding:5px 10px;border:1.5px solid var(--ink);background:transparent;
+  cursor:pointer;color:var(--ink);transition:background .15s;
+}
+.ch-layer-btn:hover{background:var(--paperDark);}
+.ch-layer-btn.active{background:var(--ink);color:var(--bone);}
+.ch-map-legend{font-size:9px;color:var(--ink);opacity:.7;letter-spacing:.5px;}
+
+/* ─── CALIBRAGEM (NOVO) ─── */
+.cal-arena{
+  display:flex;flex-direction:column;align-items:center;
+  gap:14px;padding:18px 26px 22px;flex:1;
+}
+.cal-intro{
+  text-align:center;max-width:480px;
+}
+.cal-stamp{
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:3px;
+  color:var(--bone);background:var(--brick);
+  display:inline-block;padding:4px 10px;margin-bottom:10px;
+}
+.cal-intro h3{
+  font-family:'Archivo Black',sans-serif;font-size:14px;letter-spacing:2px;
+  color:var(--ink);margin-bottom:8px;
+}
+.cal-intro p{
+  font-size:11px;color:var(--ink);line-height:1.5;opacity:.85;margin-bottom:6px;
+}
+.cal-intro .cal-warning{
+  font-style:italic;font-size:10px;opacity:.55;letter-spacing:.5px;margin-top:8px;
+}
+.cal-progress{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:2px;color:var(--ink);
+}
+.cal-progress-bar{
+  width:200px;height:4px;background:var(--paperDark);border:1px solid var(--ink);
+  position:relative;
+}
+.cal-progress-fill{
+  height:100%;background:var(--brick);width:0%;
+  transition:width .25s ease;
+}
+.cal-card-frame{
+  width:170px;height:230px;border:2px solid var(--ink);background:var(--bone);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.cal-card-frame::before{
+  content:'';position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;
+  border:1px dashed var(--brick);pointer-events:none;
+}
+.cal-card-corners{
+  position:absolute;top:6px;left:6px;right:6px;
+  display:flex;justify-content:space-between;
+  font-size:7px;letter-spacing:1.2px;color:var(--ink);opacity:.45;
+  font-family:'Archivo Black',sans-serif;
+}
+.cal-card-id{
+  position:absolute;bottom:6px;
+  font-family:'Archivo Black',sans-serif;font-size:8px;color:var(--brick);
+  letter-spacing:2px;
+}
+.cal-buttons{display:flex;gap:14px;}
+.cal-btn{
+  font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:3px;
+  padding:12px 26px;border:2px solid var(--ink);
+  cursor:pointer;transition:transform .1s, background .15s;
+  min-width:90px;
+}
+.cal-btn:active{transform:scale(.96);}
+.cal-btn-s{background:var(--olive);color:var(--bone);}
+.cal-btn-s:hover{background:var(--ink);}
+.cal-btn-r{background:var(--brick);color:var(--bone);}
+.cal-btn-r:hover{background:var(--ink);}
+.cal-tick-bar{
+  width:170px;height:3px;background:var(--paperDark);
+  position:relative;overflow:hidden;
+}
+.cal-tick-fill{
+  height:100%;background:var(--brick);width:100%;
+  transition:width 1.6s linear;
+}
+.cal-warning{
+  font-size:9px;color:var(--ink);opacity:.45;letter-spacing:1px;
+  font-style:italic;text-align:center;
+}
+.cal-stats-card{
+  background:var(--ink);color:var(--bone);padding:18px 22px;
+  text-align:center;width:100%;max-width:460px;
+}
+.cal-stats-title{font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:2.5px;color:var(--mustard);margin-bottom:10px;}
+.cal-stats-row{
+  display:flex;justify-content:space-around;
+  padding:12px 0;border-top:1px solid rgba(247,239,217,.2);border-bottom:1px solid rgba(247,239,217,.2);
+  margin:10px 0;
+}
+.cal-stats-cell{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.cal-stats-num{font-family:'Archivo Black',sans-serif;font-size:26px;color:var(--mustard);}
+.cal-stats-num.brick{color:var(--brick);}
+.cal-stats-label{font-size:8px;letter-spacing:1.5px;opacity:.8;}
+.cal-stats-msg{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:13px;line-height:1.4;color:var(--bone);margin-top:6px;
+}
+
+/* ─── REVEAL ─── */
+.reveal-body{padding:22px 26px;flex:1;}
+.reveal-stamp{
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:3px;
+  color:var(--bone);background:var(--brick);
+  display:inline-block;padding:3px 10px;margin-bottom:12px;
+}
+.reveal-titulo{
+  font-family:'Archivo Black',sans-serif;font-size:15px;letter-spacing:2px;
+  color:var(--ink);margin-bottom:12px;
+}
+.reveal-texto{
+  font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:16px;
+}
+.reveal-ficha{
+  background:var(--paper);border:1.5px solid var(--ink);
+  border-left:4px solid var(--mustard);
+  padding:12px 14px;margin-top:12px;
+}
+.reveal-ficha-label{font-family:'Archivo Black',sans-serif;font-size:8px;letter-spacing:2px;color:var(--mustard);margin-bottom:6px;}
+.reveal-ficha-quote{font-family:'DM Serif Display',serif;font-style:italic;font-size:13px;color:var(--ink);line-height:1.4;margin-bottom:4px;}
+.reveal-ficha-fonte{font-size:9px;color:var(--ink);opacity:.6;letter-spacing:.5px;}
+
+/* ─── CADERNETA & TIMELINE PANEL ─── */
+#caderneta-panel, #timeline-panel{
+  position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);
+  background:var(--bone);border-left:2px solid var(--ink);
+  z-index:300;overflow-y:auto;
+  transform:translateX(100%);transition:transform .35s ease;
+}
+#timeline-panel{width:min(420px,94vw);}
+#caderneta-panel.open, #timeline-panel.open{transform:translateX(0);}
+.caderneta-head, .timeline-head{
+  background:var(--ink);padding:14px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:1;
+}
+.caderneta-head-title, .timeline-head-title{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:3px;color:var(--bone);}
+.caderneta-close-btn, .timeline-close-btn{
+  width:28px;height:28px;background:var(--bone);border:none;
+  font-family:'Archivo Black',sans-serif;font-size:15px;color:var(--ink);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.caderneta-empty{padding:24px;font-size:12px;color:var(--ink);opacity:.5;font-style:italic;line-height:1.5;}
+.ficha-card{
+  border-bottom:1px solid var(--paperDark);padding:16px 18px;
+  animation:fichaIn .3s ease;
+}
+@keyframes fichaIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.ficha-num{font-family:'Archivo Black',sans-serif;font-size:8px;letter-spacing:2.5px;color:var(--brick);margin-bottom:6px;}
+.ficha-quote{font-family:'DM Serif Display',serif;font-style:italic;font-size:12px;color:var(--ink);line-height:1.4;margin-bottom:6px;}
+.ficha-fonte{font-size:9px;color:var(--ink);opacity:.55;letter-spacing:.5px;}
+
+/* TIMELINE ITEM */
+.tl-intro{
+  padding:18px 18px 8px;font-size:11px;color:var(--ink);line-height:1.5;opacity:.8;
+  border-bottom:1px solid var(--paperDark);
+}
+.tl-track{padding:14px 0 30px;position:relative;}
+.tl-track::before{
+  content:'';position:absolute;left:36px;top:0;bottom:14px;
+  width:2px;background:var(--ink);
+}
+.tl-event{
+  position:relative;padding:10px 18px 10px 60px;
+  border-bottom:1px dashed var(--paperDark);
+}
+.tl-event:last-child{border-bottom:none;}
+.tl-event::before{
+  content:'';position:absolute;left:30px;top:14px;
+  width:14px;height:14px;background:var(--bone);
+  border:2px solid var(--ink);border-radius:50%;
+}
+.tl-event.brick::before{background:var(--brick);}
+.tl-event.olive::before{background:var(--olive);}
+.tl-event.mustard::before{background:var(--mustard);}
+.tl-event.blue::before{background:var(--blue);}
+.tl-year{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:2px;color:var(--brick);margin-bottom:3px;}
+.tl-title{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:1px;color:var(--ink);line-height:1.2;margin-bottom:4px;}
+.tl-desc{font-size:11px;color:var(--ink);line-height:1.45;opacity:.8;}
+.tl-tag{
+  display:inline-block;font-family:'Archivo Black',sans-serif;font-size:7px;letter-spacing:1.5px;
+  padding:2px 6px;background:var(--paperDark);color:var(--ink);
+  margin-top:6px;
+}
+
+/* ─── TOAST ─── */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--bone);
+  padding:10px 20px;border:1.5px solid var(--brick);
+  font-family:'Archivo Black',sans-serif;font-size:9px;letter-spacing:2px;
+  opacity:0;transition:opacity .3s,transform .3s;z-index:500;
+  white-space:nowrap;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ─── FIM OVERLAY ─── */
+#fim-overlay{
+  display:none;position:absolute;inset:0;
+  background:rgba(239,229,206,.94);align-items:center;
+  justify-content:center;padding:24px;z-index:10;
+}
+#fim-overlay.show{display:flex;}
+.fim-box{
+  background:var(--bone);border:2px solid var(--ink);
+  box-shadow:10px 10px 0 var(--ink);max-width:520px;
+  padding:30px;text-align:center;
+}
+.fim-label{font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:3px;color:var(--brick);margin-bottom:12px;}
+.fim-quote{font-family:'DM Serif Display',serif;font-style:italic;font-size:18px;color:var(--ink);line-height:1.35;margin-bottom:12px;}
+.fim-stats{
+  display:flex;justify-content:center;gap:32px;
+  margin-bottom:14px;padding:12px 0;border-top:1px solid var(--paperDark);border-bottom:1px solid var(--paperDark);
+}
+.fim-stat-num{font-family:'Archivo Black',sans-serif;font-size:28px;color:var(--brick);}
+.fim-stat-label{font-size:8px;letter-spacing:1.5px;color:var(--ink);opacity:.6;margin-top:2px;}
+.fim-text{font-size:11px;color:var(--ink);opacity:.7;letter-spacing:.5px;line-height:1.5;}
+
+@keyframes pulse-r{0%,100%{r:18px;opacity:.45}50%{r:26px;opacity:0}}
+@keyframes pulse-o{0%,100%{opacity:.45}50%{opacity:0}}
+
+.fio-line{stroke:var(--brick);stroke-width:1;stroke-dasharray:4 3;opacity:0;transition:opacity .8s ease;}
+.fio-line.show{opacity:.75;}
+.fio-label-g{opacity:0;transition:opacity .8s ease .3s;}
+.fio-label-g.show{opacity:1;}
+</style>
+</head>
+<body>
+<!-- ═══════════════════════════════════════════════
+     PROLOGUE
+═══════════════════════════════════════════════ -->
+<section id="prologue">
+  <div class="prol-bg-grid"></div>
+
+  <!-- Screen 0: Intro -->
+  <div class="prol-screen active" id="prol-0">
+    <div class="prol-stamp">DECRETO Nº 33.405 · PREFEITURA DO SALVADOR · 2020</div>
+    <div class="prol-h1">PLANO DIRETOR DE TECNOLOGIA E COMUNICAÇÃO INTELIGENTE</div>
+    <div class="prol-sub">UMA DECISÃO ADMINISTRATIVA · UM ARTEFATO INTERATIVO · UMA PRANCHA</div>
+    <button class="prol-btn" onclick="prolNext()">→ LER O DECRETO</button>
+  </div>
+
+  <!-- Screen 1: Formulário de aprovação -->
+  <div class="prol-screen" id="prol-1">
+    <div class="prol-form">
+      <div class="prol-form-header">PROPOSTA DE MODERNIZAÇÃO URBANA · ITEM 1 DE 1 · PARA APROVAÇÃO DO GESTOR</div>
+      <div class="prol-form-body">
+        <div class="prol-form-row"><span class="prol-form-key">Programa</span><span class="prol-form-val">Cidade Inteligente — Iluminação Pública LED</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Modalidade</span><span class="prol-form-val">Parceria Público-Privada (PPP)</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Prazo do contrato</span><span class="prol-form-val highlight">25 ANOS</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Valor estimado</span><span class="prol-form-val highlight">R$ 665.437.861,33</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Luminárias LED</span><span class="prol-form-val">47.000 unidades telegerenciadas</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Economia energética prevista</span><span class="prol-form-val">60%</span></div>
+        <div class="prol-form-row"><span class="prol-form-key">Coordenação</span><span class="prol-form-val">Secretaria Municipal de Urbanismo</span></div>
+      </div>
+      <div class="prol-form-footer">
+        <label class="prol-checkbox-label">
+          <input type="checkbox" class="prol-checkbox" id="prol-check" onchange="document.getElementById('prol-approve-btn').disabled=!this.checked;">
+          Li e aprovo os termos
+        </label>
+        <button class="prol-btn" id="prol-approve-btn" disabled onclick="prolApprove()">APROVAR →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: O que foi instalado -->
+  <div class="prol-screen" id="prol-2">
+    <div class="prol-reveal-list" id="prol-reveal-list">
+      <div class="prol-reveal-head">INFRAESTRUTURA EFETIVAMENTE IMPLANTADA · DECRETO 33.405/2020</div>
+      <div class="prol-reveal-item" data-delay="200"><span class="ri-icon">✓</span> 47.000 luminárias LED telegerenciadas</div>
+      <div class="prol-reveal-item" data-delay="600"><span class="ri-icon">✓</span> Fibra óptica: 840 km de cabeamento urbano</div>
+      <div class="prol-reveal-item" data-delay="1000"><span class="ri-icon">✓</span> 18.000 sensores urbanos integrados</div>
+      <div class="prol-reveal-item red" data-delay="1500"><span class="ri-icon">+</span> 1.900 câmeras de videomonitoramento</div>
+      <div class="prol-reveal-item red" data-delay="2000"><span class="ri-icon">+</span> Centro de Controle Operacional (CCO)</div>
+      <div class="prol-reveal-item red" data-delay="2500"><span class="ri-icon">+</span> Sistema de reconhecimento facial biométrico</div>
+      <div class="prol-reveal-item red" data-delay="3000"><span class="ri-icon">+</span> Coleta e processamento de dados de 2,9M de cidadãos</div>
+      <div class="prol-reveal-msg" id="prol-reveal-msg">Você aprovou a iluminação.<br>O resto veio junto.</div>
+    </div>
+    <div style="margin-top:20px;opacity:0;transition:opacity .5s ease 3.5s;" id="prol-next2-wrap">
+      <button class="prol-btn" onclick="prolNext()">→ ENTRAR NA CIDADE</button>
+    </div>
+  </div>
+
+  <!-- Screen 3: Transição -->
+  <div class="prol-screen" id="prol-3">
+    <div class="prol-stamp">PRANCHA Nº 01 · CORTE TRANSVERSAL · ESC. VARIÁVEL</div>
+    <div class="prol-h1" style="font-size:clamp(18px,3vw,32px);">A CIDADE INTELIGENTE</div>
+    <div class="prol-sub" style="max-width:440px;text-align:center;margin-bottom:28px;line-height:1.6;">
+      Esta prancha documenta o que o decreto não descreve.<br>
+      Explore as 6 vinhetas. Cada uma guarda um desafio.<br>
+      Consulte a <strong>linha do tempo</strong> para o contexto histórico.<br>
+      Nenhuma escolha é inocente.
+    </div>
+    <button class="prol-btn" onclick="startApp()">→ INICIAR A LEITURA</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     APP
+═══════════════════════════════════════════════ -->
+<div id="app" class="hidden">
+
+  <header>
+    <div class="header-left">
+      <div class="header-icon">▣</div>
+      <div>
+        <div class="header-title">A CIDADE INTELIGENTE</div>
+        <div class="header-sub">SEIS VINHETAS · UMA PRANCHA · ESC. INDETERMINADA</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="leg-wrap">
+        <div class="leg-label">LEGIBILIDADE URBANA</div>
+        <div class="leg-bar-track"><div class="leg-bar-fill" id="leg-fill"></div></div>
+        <div class="leg-status" id="leg-status">INVISÍVEL</div>
+      </div>
+      <button class="header-btn" onclick="toggleTimeline()">
+        ▶ LINHA DO TEMPO
+      </button>
+      <button class="header-btn" onclick="toggleCaderneta()">
+        ▤ CADERNETA
+        <span class="caderneta-badge" id="caderneta-badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="map-wrapper">
+      <svg id="city-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="hatch-brick" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#A8412A" stroke-width="1"/>
+          </pattern>
+          <pattern id="hatch-blue" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#577387" stroke-width="1"/>
+          </pattern>
+          <pattern id="hatch-olive" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(30)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#5B6B3F" stroke-width="1"/>
+          </pattern>
+          <pattern id="dots" patternUnits="userSpaceOnUse" width="8" height="8">
+            <circle cx="2" cy="2" r=".8" fill="#1A1611" opacity=".35"/>
+          </pattern>
+          <pattern id="grid-paper" patternUnits="userSpaceOnUse" width="20" height="20">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1A1611" stroke-width=".3" opacity=".12"/>
+          </pattern>
+        </defs>
+        <rect width="1000" height="600" fill="#EFE5CE"/>
+        <rect width="1000" height="600" fill="url(#grid-paper)"/>
+        <circle cx="850" cy="80" r="38" fill="none" stroke="#1A1611" stroke-width=".8" stroke-dasharray="2 3"/>
+        <circle cx="850" cy="80" r="22" fill="#C89339" opacity=".7"/>
+        <g transform="translate(120,70)">
+          <rect x="-4" y="-3" width="8" height="6" fill="#1A1611"/>
+          <rect x="-14" y="-2" width="9" height="4" fill="#577387"/>
+          <rect x="5" y="-2" width="9" height="4" fill="#577387"/>
+          <line x1="0" y1="3" x2="0" y2="35" stroke="#1A1611" stroke-width=".5" stroke-dasharray="2 2"/>
+          <text x="0" y="-10" text-anchor="middle" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1">SAT · UPLINK</text>
+        </g>
+        <rect x="0" y="430" width="200" height="170" fill="#577387" opacity=".35"/>
+        <path d="M 0 445 Q 25 440 50 445 T 100 445 T 150 445 T 200 445" fill="none" stroke="#577387" stroke-width=".8" opacity=".6"/>
+        <path d="M 0 470 Q 25 465 50 470 T 100 470 T 150 470 T 200 470" fill="none" stroke="#577387" stroke-width=".8" opacity=".6"/>
+        <path d="M 0 495 Q 25 490 50 495 T 100 495 T 150 495 T 200 495" fill="none" stroke="#577387" stroke-width=".8" opacity=".6"/>
+        <g transform="translate(140,455)">
+          <rect x="-15" y="0" width="30" height="6" fill="#1A1611"/>
+          <polygon points="-15,0 -22,6 15,6" fill="#1A1611"/>
+          <rect x="-3" y="-10" width="6" height="10" fill="#A8412A"/>
+        </g>
+        <line x1="0" y1="430" x2="200" y2="430" stroke="#1A1611" stroke-width="1"/>
+        <line x1="200" y1="430" x2="200" y2="380" stroke="#1A1611" stroke-width="1"/>
+        <line x1="200" y1="380" x2="1000" y2="380" stroke="#1A1611" stroke-width="1"/>
+        <rect x="0" y="430" width="1000" height="170" fill="url(#dots)" opacity=".4"/>
+        <rect x="200" y="380" width="800" height="50" fill="#DDD0B0" opacity=".6"/>
+        <line x1="220" y1="395" x2="980" y2="395" stroke="#1A1611" stroke-width="1"/>
+        <line x1="220" y1="405" x2="980" y2="405" stroke="#1A1611" stroke-width="1" stroke-dasharray="4 2"/>
+        <line x1="220" y1="415" x2="980" y2="415" stroke="#1A1611" stroke-width="1"/>
+        <text x="600" y="425" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5" opacity=".6" text-anchor="middle">── INFRAESTRUTURA · FIBRA ÓPTICA · 840KM · 100GB/s ──</text>
+        <g transform="translate(50,360)">
+          <rect x="0" y="0" width="35" height="20" fill="#A8412A"/>
+          <polygon points="-3,0 38,0 32,-8 3,-8" fill="#C89339"/>
+          <line x1="3" y1="-8" x2="3" y2="20" stroke="#1A1611" stroke-width=".5"/>
+          <line x1="32" y1="-8" x2="32" y2="20" stroke="#1A1611" stroke-width=".5"/>
+          <rect x="50" y="0" width="35" height="20" fill="#5B6B3F"/>
+          <polygon points="47,0 88,0 82,-8 53,-8" fill="#A8412A"/>
+          <g transform="translate(110,-5)">
+            <circle cx="6" cy="3" r="4" fill="#1A1611"/>
+            <rect x="2" y="7" width="8" height="14" fill="#A8412A"/>
+            <rect x="-4" y="14" width="20" height="3" fill="#C89339"/>
+          </g>
+          <text x="42" y="35" text-anchor="middle" font-size="6" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5" opacity=".7">FEIRA · MERCADO POPULAR</text>
+        </g>
+        <line x1="200" y1="100" x2="200" y2="380" stroke="#1A1611" stroke-width="1.5"/>
+        <rect x="190" y="100" width="20" height="280" fill="url(#hatch-brick)" opacity=".3"/>
+        <rect x="195" y="180" width="10" height="30" fill="#F7EFD9" stroke="#1A1611" stroke-width=".8"/>
+        <text x="180" y="95" text-anchor="end" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1">— CIDADE ALTA →</text>
+        <text x="100" y="350" text-anchor="middle" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1">← CIDADE BAIXA —</text>
+        <polygon points="200,380 200,200 350,150 500,170 500,380" fill="#5B6B3F" opacity=".4"/>
+        <polygon points="200,380 200,200 350,150 500,170 500,380" fill="url(#hatch-olive)" opacity=".3"/>
+        <g>
+          <g><rect x="220" y="240" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="219,240 235,240 227,235" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="225" y="246" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="260" y="220" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="259,220 275,220 267,215" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="265" y="226" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="300" y="200" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="299,200 315,200 307,195" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="305" y="206" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="340" y="175" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="339,175 355,175 347,170" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="345" y="181" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="380" y="165" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="379,165 395,165 387,160" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="385" y="171" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="420" y="175" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="419,175 435,175 427,170" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="425" y="181" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="460" y="185" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="459,185 475,185 467,180" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="465" y="191" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="240" y="280" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="239,280 255,280 247,275" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="245" y="286" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="290" y="250" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="289,250 305,250 297,245" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="295" y="256" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="340" y="230" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="339,230 355,230 347,225" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="345" y="236" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="400" y="220" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="399,220 415,220 407,215" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="405" y="226" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="450" y="230" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="449,230 465,230 457,225" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="455" y="236" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="220" y="320" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="219,320 235,320 227,315" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="225" y="326" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="270" y="310" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="269,310 285,310 277,305" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="275" y="316" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="320" y="290" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="319,290 335,290 327,285" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="325" y="296" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="380" y="280" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="379,280 395,280 387,275" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="385" y="286" width="3" height="6" fill="#1A1611"/></g>
+          <g><rect x="430" y="285" width="14" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/><polygon points="429,285 445,285 437,280" fill="#A8412A" stroke="#1A1611" stroke-width=".4"/><rect x="435" y="291" width="3" height="6" fill="#1A1611"/></g>
+        </g>
+        <text x="350" y="140" text-anchor="middle" font-size="6" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="2" opacity=".7">AUTO-CONSTRUÇÃO · ZONA INFORMAL</text>
+        <rect x="540" y="120" width="80" height="260" fill="#577387" stroke="#1A1611" stroke-width="1"/>
+        <rect x="540" y="120" width="80" height="260" fill="url(#hatch-blue)" opacity=".25"/>
+        <g id="janelas-ops">
+          <rect x="548" y="130" width="9" height="14" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3" opacity=".85"/>
+          <rect x="562" y="130" width="9" height="14" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3" opacity=".85"/>
+          <rect x="576" y="130" width="9" height="14" fill="#C89339" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="590" y="130" width="9" height="14" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3" opacity=".85"/>
+          <rect x="604" y="130" width="9" height="14" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3" opacity=".85"/>
+        </g>
+        <rect x="555" y="100" width="50" height="20" fill="#1A1611"/>
+        <line x1="580" y1="100" x2="580" y2="78" stroke="#1A1611" stroke-width="1.5"/>
+        <circle cx="580" cy="76" r="3" fill="#A8412A"/>
+        <text x="580" y="395" text-anchor="middle" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5">CENTRO DE OPERAÇÕES</text>
+        <rect x="660" y="200" width="100" height="180" fill="#DDD0B0" stroke="#1A1611" stroke-width="1"/>
+        <rect x="672" y="220" width="6" height="100" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/>
+        <rect x="690" y="220" width="6" height="100" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/>
+        <rect x="708" y="220" width="6" height="100" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/>
+        <rect x="726" y="220" width="6" height="100" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/>
+        <rect x="744" y="220" width="6" height="100" fill="#F7EFD9" stroke="#1A1611" stroke-width=".4"/>
+        <polygon points="660,200 760,200 710,175" fill="#F7EFD9" stroke="#1A1611" stroke-width="1"/>
+        <rect x="690" y="335" width="40" height="25" fill="#C89339" stroke="#1A1611" stroke-width=".5"/>
+        <text x="710" y="395" text-anchor="middle" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5">PREFEITURA · ALA TÉCNICA</text>
+        <rect x="800" y="180" width="60" height="200" fill="#F7EFD9" stroke="#1A1611" stroke-width="1"/>
+        <g opacity=".5">
+          <rect x="808" y="190" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="821" y="190" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="834" y="190" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="847" y="190" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="808" y="210" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="821" y="210" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="834" y="210" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="847" y="210" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="808" y="230" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="821" y="230" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="834" y="230" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="847" y="230" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="808" y="250" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="821" y="250" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="834" y="250" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="847" y="250" width="8" height="12" fill="#577387" stroke="#1A1611" stroke-width=".3"/>
+        </g>
+        <rect x="880" y="220" width="80" height="160" fill="#A8412A" stroke="#1A1611" stroke-width="1"/>
+        <rect x="880" y="220" width="80" height="160" fill="url(#hatch-brick)" opacity=".25"/>
+        <g opacity=".85">
+          <rect x="886" y="230" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="900" y="230" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="914" y="230" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="928" y="230" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="942" y="230" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="886" y="250" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="900" y="250" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="914" y="250" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="928" y="250" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="942" y="250" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="886" y="270" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="900" y="270" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="914" y="270" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="928" y="270" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+          <rect x="942" y="270" width="8" height="12" fill="#F7EFD9" stroke="#1A1611" stroke-width=".3"/>
+        </g>
+        <g transform="translate(155,360)">
+          <line x1="0" y1="0" x2="0" y2="-50" stroke="#1A1611" stroke-width="1.5"/>
+          <rect x="-7" y="-58" width="14" height="8" fill="#1A1611"/>
+          <circle cx="-3" cy="-54" r="1.5" fill="#A8412A"/>
+          <polygon points="-7,-54 -45,-30 -45,-50" fill="#A8412A" opacity=".18" stroke="#A8412A" stroke-width=".5" stroke-dasharray="2 2"/>
+        </g>
+        <g transform="translate(495,145)">
+          <circle cx="0" cy="0" r="3" fill="#1A1611"/>
+          <rect x="-3" y="3" width="6" height="11" fill="#C89339"/>
+          <rect x="-6" y="2" width="3" height="5" fill="#1A1611"/>
+          <g transform="translate(15,-25)">
+            <rect x="0" y="0" width="55" height="22" fill="#F7EFD9" stroke="#1A1611" stroke-width=".7"/>
+            <polygon points="0,18 -5,25 5,18" fill="#F7EFD9" stroke="#1A1611" stroke-width=".7"/>
+            <text x="27" y="9" text-anchor="middle" font-size="5" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing=".5">evite esta região</text>
+            <text x="27" y="16" text-anchor="middle" font-size="5" font-family="'Archivo',sans-serif" fill="#A8412A" letter-spacing=".5">★★★★★</text>
+          </g>
+        </g>
+        <path d="M 960 405 L 980 405 L 985 415 L 985 470" fill="none" stroke="#1A1611" stroke-width="2"/>
+        <g transform="translate(965,480)">
+          <rect x="-12" y="0" width="40" height="50" fill="#5B6B3F" stroke="#1A1611" stroke-width="1"/>
+          <rect x="-12" y="0" width="40" height="50" fill="url(#hatch-olive)" opacity=".3"/>
+          <line x1="-10" y1="5" x2="26" y2="5" stroke="#F7EFD9" stroke-width=".6"/>
+          <line x1="-10" y1="15" x2="26" y2="15" stroke="#F7EFD9" stroke-width=".6"/>
+          <line x1="-10" y1="25" x2="26" y2="25" stroke="#F7EFD9" stroke-width=".6"/>
+          <line x1="-10" y1="35" x2="26" y2="35" stroke="#F7EFD9" stroke-width=".6"/>
+          <rect x="-12" y="-12" width="14" height="9" fill="#F7EFD9" stroke="#1A1611" stroke-width=".5"/>
+          <text x="-5" y="-5" text-anchor="middle" font-size="6" font-family="'Archivo Black',sans-serif" fill="#577387">US</text>
+          <text x="8" y="68" text-anchor="middle" font-size="6" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1">DATACENTER · VA</text>
+          <g transform="translate(-30,15)" opacity=".55">
+            <path d="M 0 0 Q -3 -5 0 -10 Q 3 -5 0 0 Z" fill="#577387"/>
+            <text x="0" y="20" text-anchor="middle" font-size="5" font-family="'Archivo',sans-serif" fill="#577387" letter-spacing=".5">H₂O</text>
+          </g>
+        </g>
+        <text x="900" y="397" font-size="6" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5">→ DADOS · 89ms</text>
+        <text x="20" y="30" font-size="11" font-family="'Archivo Black',sans-serif" fill="#1A1611" letter-spacing="3">PRANCHA Nº 01 · CORTE TRANSVERSAL</text>
+        <text x="20" y="43" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="2" opacity=".7">A CIDADE INTELIGENTE · ESCALA: VARIÁVEL · DECRETO 33.405/2020</text>
+        <text x="980" y="30" text-anchor="end" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="2" opacity=".7">⌖ CLIQUE NOS NÚMEROS</text>
+        <g id="fio-vermelho-layer">
+          <line id="fio-1-5" class="fio-line" x1="580" y1="170" x2="710" y2="345"/>
+          <line id="fio-2-6" class="fio-line" x1="155" y1="310" x2="495" y2="130"/>
+          <line id="fio-3-4" class="fio-line" x1="158" y1="365" x2="970" y2="460"/>
+          <line id="fio-1-2" class="fio-line" x1="580" y1="170" x2="155" y2="310"/>
+          <line id="fio-2-3" class="fio-line" x1="155" y1="310" x2="158" y2="365"/>
+          <line id="fio-4-5" class="fio-line" x1="970" y1="460" x2="710" y2="345"/>
+          <g id="fio-label" class="fio-label-g">
+            <rect x="420" y="268" width="160" height="18" fill="#A8412A"/>
+            <text x="500" y="280" text-anchor="middle" font-size="7" font-family="'Archivo Black',sans-serif" fill="#F7EFD9" letter-spacing="1.5">SISTEMA INTEGRADO</text>
+          </g>
+        </g>
+        <g id="hotspots-layer"></g>
+      </svg>
+    </div>
+
+    <div id="fim-overlay">
+      <div class="fim-box">
+        <div class="fim-label">FIM DA PRANCHA · DECRETO 33.405/2020 · VIGÊNCIA: 25 ANOS</div>
+        <div class="fim-quote">"Não existe cidade inteligente. Existem cidades que decidem, com tecnologia, quem é legível e quem é descartável."</div>
+        <div class="fim-stats">
+          <div><div class="fim-stat-num" id="fim-fichas">0</div><div class="fim-stat-label">FICHAS ARQUIVADAS</div></div>
+          <div><div class="fim-stat-num">6</div><div class="fim-stat-label">CONEXÕES REVELADAS</div></div>
+          <div><div class="fim-stat-num">100%</div><div class="fim-stat-label">LEGIBILIDADE URBANA</div></div>
+        </div>
+        <div class="fim-text">A pesquisa em ciências humanas, mais do que nunca, é um trabalho de tradução: tornar visível o que o sistema apaga.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-label">ÍNDICE DE VINHETAS</div>
+    <div class="footer-btns" id="footer-btns"></div>
+    <div class="footer-count">
+      <span class="count-label">VISITADAS</span>
+      <span class="count-num" id="count-num">0/6</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL
+═══════════════════════════════════════════════ -->
+<div id="modal-overlay">
+  <div class="modal-card" id="modal-card">
+    <div class="modal-header" id="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-num" id="modal-num"></div>
+        <div>
+          <div class="modal-titulo" id="modal-titulo"></div>
+          <div class="modal-subtitulo" id="modal-subtitulo"></div>
+        </div>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="fechar">×</button>
+    </div>
+
+    <!-- NOVO: Phase Calibragem (apenas V2) -->
+    <div class="modal-phase" id="phase-calibragem">
+      <div class="cal-arena" id="cal-arena"></div>
+    </div>
+
+    <!-- Phase narrative -->
+    <div class="modal-phase active" id="phase-narrative">
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-nav">
+        <button class="modal-nav-btn secondary" id="btn-skip" onclick="closeModal()">FECHAR</button>
+        <button class="modal-nav-btn" id="btn-advance" onclick="goToChallenge()">→ ENFRENTAR O SISTEMA</button>
+      </div>
+    </div>
+
+    <!-- Phase challenge -->
+    <div class="modal-phase" id="phase-challenge">
+      <div class="challenge-body" id="challenge-body"></div>
+    </div>
+
+    <!-- Phase reveal -->
+    <div class="modal-phase" id="phase-reveal">
+      <div class="reveal-body" id="reveal-body"></div>
+      <div class="modal-nav">
+        <button class="modal-nav-btn" id="btn-close-reveal" onclick="closeFromReveal()">→ ARQUIVAR E FECHAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CADERNETA
+═══════════════════════════════════════════════ -->
+<div id="caderneta-panel">
+  <div class="caderneta-head">
+    <div class="caderneta-head-title">▤ CADERNETA DE CAMPO</div>
+    <button class="caderneta-close-btn" onclick="toggleCaderneta()">×</button>
+  </div>
+  <div id="caderneta-content">
+    <div class="caderneta-empty" id="caderneta-empty">Nenhuma ficha arquivada ainda.<br><br>Complete os desafios de cada vinheta para acumular fichas bibliográficas.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TIMELINE PANEL (NOVO)
+═══════════════════════════════════════════════ -->
+<div id="timeline-panel">
+  <div class="timeline-head">
+    <div class="timeline-head-title">▶ LINHA DO TEMPO · SMART CITY BR</div>
+    <button class="timeline-close-btn" onclick="toggleTimeline()">×</button>
+  </div>
+  <div class="tl-intro">
+    Trinta anos de uma ideia: como o conceito de "cidade inteligente" virou política pública, infraestrutura, e um aparato de vigilância no Brasil.
+  </div>
+  <div class="tl-track">
+    <div class="tl-event">
+      <div class="tl-year">1991</div>
+      <div class="tl-title">CONCEITO ACADÊMICO EMERGE</div>
+      <div class="tl-desc">A expressão "smart city" começa a circular em estudos sobre tecnologias de informação aplicadas à gestão urbana — ainda como utopia técnica, sem aparato comercial.</div>
+    </div>
+    <div class="tl-event blue">
+      <div class="tl-year">2008</div>
+      <div class="tl-title">IBM "SMARTER PLANET" · CORPORATIZAÇÃO</div>
+      <div class="tl-desc">A IBM lança a campanha global "Smarter Planet". A cidade inteligente passa a ser um produto vendável a prefeituras. Cisco, Siemens e Microsoft seguem.</div>
+      <span class="tl-tag">MARCO COMERCIAL</span>
+    </div>
+    <div class="tl-event blue">
+      <div class="tl-year">2010</div>
+      <div class="tl-title">CENTRO DE OPERAÇÕES RIO (COR)</div>
+      <div class="tl-desc">Prefeitura do Rio inaugura, com IBM e Cisco, o primeiro grande Centro de Operações Inteligentes da América Latina. Modelo replicado por dezenas de prefeituras.</div>
+      <span class="tl-tag">VINHETA 1</span>
+    </div>
+    <div class="tl-event">
+      <div class="tl-year">2013</div>
+      <div class="tl-title">JUNHO DE 2013 · VIGILÂNCIA SE EXPANDE</div>
+      <div class="tl-desc">As manifestações de junho aceleram a aquisição municipal de tecnologias de monitoramento. Câmeras, drones e softwares de "monitoramento de redes sociais" entram nos orçamentos.</div>
+    </div>
+    <div class="tl-event mustard">
+      <div class="tl-year">2014–2016</div>
+      <div class="tl-title">COPA E OLIMPÍADAS · LEGADO TECNOLÓGICO</div>
+      <div class="tl-desc">Megaeventos no Brasil deixam um legado de infraestrutura "smart": câmeras de alta definição, centros de operação integrados, contratos de manutenção a longo prazo com fornecedores estrangeiros.</div>
+    </div>
+    <div class="tl-event olive">
+      <div class="tl-year">2018</div>
+      <div class="tl-title">LGPD APROVADA (Lei 13.709)</div>
+      <div class="tl-desc">A Lei Geral de Proteção de Dados é sancionada. Prevê direito à revisão de decisões automatizadas (Art. 20), mas a fiscalização demora 3 anos para começar.</div>
+      <span class="tl-tag">VINHETA 3</span>
+    </div>
+    <div class="tl-event brick">
+      <div class="tl-year">2020</div>
+      <div class="tl-title">DECRETO 33.405 · SALVADOR</div>
+      <div class="tl-desc">Plano Diretor de Tecnologia e Comunicação Inteligente. PPP de 25 anos, R$665M, 47 mil luminárias LED, 1.900 câmeras, sistema de reconhecimento facial. Decretos similares em Brasília, BH, Recife e São Paulo no mesmo período.</div>
+      <span class="tl-tag">PRANCHA</span>
+    </div>
+    <div class="tl-event olive">
+      <div class="tl-year">2021</div>
+      <div class="tl-title">ANPD COMEÇA A FISCALIZAR</div>
+      <div class="tl-desc">A Autoridade Nacional de Proteção de Dados começa a operar. Em 2022, multas e advertências começam a aparecer — mas as smart cities já estão instaladas. O contrato vigora.</div>
+    </div>
+    <div class="tl-event brick">
+      <div class="tl-year">2022–2024</div>
+      <div class="tl-title">RECONHECIMENTO FACIAL EM ESTÁDIOS</div>
+      <div class="tl-desc">Bahia, Maracanã e outros estádios brasileiros adotam reconhecimento facial obrigatório para entrada — sem alternativa de opt-out, sem auditoria pública dos algoritmos. Dezenas de erros de identificação documentados.</div>
+      <span class="tl-tag">VINHETA 2</span>
+    </div>
+    <div class="tl-event mustard">
+      <div class="tl-year">2024</div>
+      <div class="tl-title">VIGILÂNCIA POR LENTES OPACAS · CESEC</div>
+      <div class="tl-desc">Pesquisa do CESeC e LAPIN: quase metade dos projetos de reconhecimento facial em municípios brasileiros não atende a pedidos de transparência passiva. "Segredo industrial" se sobrepõe a auditoria pública.</div>
+      <span class="tl-tag">VINHETA 5</span>
+    </div>
+    <div class="tl-event">
+      <div class="tl-year">2025</div>
+      <div class="tl-title">SALVADOR · 1.900 CÂMERAS INTEGRADAS</div>
+      <div class="tl-desc">O sistema integra dados de iluminação, mobilidade, saúde municipal, câmeras e biometria em um único centro operacional. 2,9 milhões de cidadãos processados por servidores AWS na Virgínia.</div>
+      <span class="tl-tag">AGORA</span>
+    </div>
+    <div class="tl-event brick">
+      <div class="tl-year">2045</div>
+      <div class="tl-title">FIM DA VIGÊNCIA DA PPP</div>
+      <div class="tl-desc">O contrato de Salvador, assinado em 2020, expira. Cinco gestões municipais depois. Quem você elegeu em 2024 não pode rescindir o que foi assinado em 2020. A infraestrutura permanece.</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+const PALETA = {paper:'#EFE5CE',paperDark:'#DDD0B0',ink:'#1A1611',brick:'#A8412A',mustard:'#C89339',blue:'#577387',olive:'#5B6B3F',bone:'#F7EFD9'};
+
+const LEG_STAGES = [
+  {pct:0,  label:'INVISÍVEL'},
+  {pct:17, label:'DETECTADO'},
+  {pct:33, label:'MONITORADO'},
+  {pct:50, label:'PERFILADO'},
+  {pct:67, label:'CLASSIFICADO'},
+  {pct:83, label:'RASTREADO'},
+  {pct:100,label:'COMPLETAMENTE LEGÍVEL'}
+];
+
+const HOTSPOT_POS = [
+  {id:1,x:580,y:170,cor:'blue'},
+  {id:2,x:155,y:310,cor:'brick'},
+  {id:3,x:158,y:365,cor:'mustard'},
+  {id:4,x:970,y:460,cor:'olive'},
+  {id:5,x:710,y:345,cor:'brick'},
+  {id:6,x:495,y:130,cor:'mustard'},
+];
+
+const FIO_PARES = [
+  {ids:[1,5], el:'fio-1-5'},
+  {ids:[2,6], el:'fio-2-6'},
+  {ids:[3,4], el:'fio-3-4'},
+  {ids:[1,2], el:'fio-1-2'},
+  {ids:[2,3], el:'fio-2-3'},
+  {ids:[4,5], el:'fio-4-5'},
+];
+
+// ─── Tempos de exibição dos resultados intermediários (antes do reveal) ───
+// Aumentados para o usuário ter tempo de ler o que aconteceu.
+const REVEAL_DELAY = {
+  decisao: 1800,
+  score: 2000,
+  contrato_done: 2800,
+  contrato_timeout: 1500,
+  rota: 2800,
+  relatorio: 3800,
+  mapa: 5500
+};
+
+// ─── PERFIS DA CALIBRAGEM (V2 pré-fase) ───
+// 10 perfis em silhueta. Diversidade controlada para expor o viés.
+// pele: 1=clara, 2=média, 3=escura, 4=muito escura
+// cabelo: 'liso','cacheado','crespo','curto','calva'
+// roupa: 'terno','capuz','bone','fone','mochila','casual'
+const CAL_PERFIS = [
+  {id:'A1', pele:1, cabelo:'liso',     roupa:'terno',   verdade:'seguro'},
+  {id:'A2', pele:3, cabelo:'crespo',   roupa:'capuz',   verdade:'seguro'},
+  {id:'A3', pele:2, cabelo:'cacheado', roupa:'fone',    verdade:'seguro'},
+  {id:'A4', pele:4, cabelo:'crespo',   roupa:'bone',    verdade:'seguro'},
+  {id:'A5', pele:1, cabelo:'liso',     roupa:'casual',  verdade:'seguro'},
+  {id:'A6', pele:3, cabelo:'curto',    roupa:'mochila', verdade:'seguro'},
+  {id:'A7', pele:2, cabelo:'cacheado', roupa:'terno',   verdade:'seguro'},
+  {id:'A8', pele:4, cabelo:'calva',    roupa:'capuz',   verdade:'seguro'},
+  {id:'A9', pele:1, cabelo:'cacheado', roupa:'bone',    verdade:'seguro'},
+  {id:'A10',pele:4, cabelo:'crespo',   roupa:'terno',   verdade:'seguro'}, // pega o usuário
+];
+
+const TONS_PELE = {
+  1:'#E8C9A0',
+  2:'#B88862',
+  3:'#7A4F2E',
+  4:'#3D2415'
+};
+
+const VINHETAS = [
+  {
+    id:1, titulo:'CENTRO DE OPERAÇÕES INTELIGENTES', subtitulo:'4ª madrugada · turno B',
+    cor:'blue', cena:'Dona Lúcia entra às 3h47.',
+    paragrafos:[
+      'Os monitores estão sempre ligados. As máquinas estão sempre quentes — Lúcia aprendeu, no primeiro dia, a não encostar muito tempo na lateral dos servidores. Ela limpa o pó que ninguém vê e os vidros que ninguém olha.',
+      'O sistema processa, em tempo real, 1.247.000 imagens por minuto. Lúcia processa, em tempo real, 14 banheiros, 6 corredores, 2 cozinhas e o saguão.',
+      'Quando o turno acaba, ela pega o ônibus de volta. O ônibus passa por debaixo do prédio. O prédio sabe que ela passou.',
+    ],
+    rodape:'↳ Trabalho invisível e infraestrutura. · COR Rio: IBM/Cisco · Ativo desde 2010, expandido c/ IA em 2025.',
+    challenge: {
+      tipo:'decisao',
+      instrucao:'Identificador LMF-0029 (L. Ferreira) acessa o edifício às 3h47 pela entrada de serviço. O sistema aguarda instrução:',
+      opcoes:[
+        {id:'a', label:'REGISTRAR E ARQUIVAR', sub:'Sem notificação ao titular dos dados'},
+        {id:'b', label:'CRUZAR COM BASE DE RH', sub:'Compartilhar com gestão de pessoal'},
+        {id:'c', label:'ATIVAR ANÁLISE COMPORTAMENTAL', sub:'Detectar desvios de padrão de acesso'}
+      ],
+      revelar:{
+        a:{titulo:'LOG Nº 847 · ARQUIVO ATUALIZADO',texto:'Registro gravado. Lúcia Ferreira não foi notificada. O sistema sabe que ela também passou sob este prédio às 6h22, no ônibus de volta — o mesmo que é filmado pelas câmeras do cruzamento. Nenhuma dessas ações viola a LGPD. O contrato de PPP que instalou este sistema vigora por mais 19 anos.', toast:'PPP VIGENTE · CONTRATO ATIVO POR +19 ANOS'},
+        b:{titulo:'COMPARTILHAMENTO PROCESSADO',texto:'Frequência: 94,3%. Produtividade: dentro da média. O dado foi transmitido à gestora de RH sem notificação a Lúcia. O contrato de trabalho autoriza "monitoramento de acesso para fins de segurança operacional". Lúcia não tem acesso a este log. Lúcia não sabe o que foi compartilhado.', toast:null},
+        c:{titulo:'ANOMALIA DETECTADA · ARQUIVO ATUALIZADO',texto:'Entrada 12 minutos antes do padrão habitual de terças-feiras. Arquivo de "desvios comportamentais" atualizado: 1 ocorrência. O sistema não sabe o motivo. O sistema não precisa saber. O ônibus havia atrasado.', toast:null}
+      }
+    },
+    ficha:{texto:'"O trabalho invisível sustenta a infraestrutura visível. A crescente corporatização da gestão municipal não aparece nos discursos de eficiência."',fonte:'Reia & Belli, Smart Cities no Brasil: Regulação, tecnologia e direitos, 2021'}
+  },
+  {
+    id:2, titulo:'CÂMERA Nº 0834-B', subtitulo:'Largo histórico · 14h22',
+    cor:'brick', cena:'Marcus, 16, atravessa a praça.',
+    paragrafos:[
+      'A câmera reconheceu Marcus 3 vezes este mês. Marcus tem 16 anos. Marcus nunca foi preso.',
+      'O modelo foi treinado com fotos de quem JÁ foi preso. As fotos são, em sua maioria, de pessoas que se parecem com Marcus.',
+      'O sistema chama isso de "predição". O delegado chama de "abordagem preventiva". Marcus chama de quarta-feira.',
+    ],
+    rodape:'↳ Viés algorítmico. · Salvador integra 1.900 câmeras em sistema único. · O Panóptico/CESeC, 2025.',
+    asterisco:'* O fabricante anuncia "97% de acurácia". O laudo não especifica em quais rostos.',
+    // V2 tem pré-fase de calibragem antes do desafio principal
+    preCalibragem: true,
+    challenge:{
+      tipo:'score',
+      instrucao:'Agora, em "operação real": o sistema retornou estas 4 correspondências para o banco de dados de investigados. Selecione um perfil para abordagem preventiva:',
+      perfis:[
+        {id:'A', score:'91%', sub:'correspondência geométrica', pele:4, cabelo:'crespo', roupa:'capuz'},
+        {id:'B', score:'84%', sub:'correspondência geométrica', pele:3, cabelo:'curto',  roupa:'bone'},
+        {id:'C', score:'79%', sub:'correspondência geométrica', pele:2, cabelo:'cacheado', roupa:'casual'},
+        {id:'D', score:'73%', sub:'correspondência geométrica', pele:1, cabelo:'liso', roupa:'terno'},
+      ],
+      revelar_fn: (escolha) => {
+        const eq = escolha === 'A';
+        const scores = {A:'91%',B:'84%',C:'79%',D:'73%'};
+        return {
+          titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
+          texto: eq
+            ? 'Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. O banco de dados foi construído com 89% de registros de homens negros — porque é isso que o sistema penal seletivo brasileiro produz. O algoritmo aprendeu com o que existe. A eficiência e o preconceito são, aqui, indistinguíveis.'
+            : `Você e o algoritmo divergiram. O sistema teria sinalizado A (91%), não ${escolha} (${scores[escolha]}). Mas isso não importa: independente da sua escolha, Marcus foi abordado. O operador concordou com o maior score. É sempre o maior score.`
+        };
+      }
+    },
+    ficha:{texto:'"O algoritmo converte uma dúvida estatística em certeza administrativa. A interface apaga a porcentagem de erro e exibe apenas: SUSPEITO DETECTADO."',fonte:'O Panóptico / CESeC · Algoritmos e Direitos: Tecnologias Digitais na Justiça Criminal, 2025'}
+  },
+  {
+    id:3, titulo:'MAQUININHA · MODELO S-21', subtitulo:'Feira de São Joaquim · 11h00',
+    cor:'mustard', cena:'Dona Edna vende acarajé há 31 anos.',
+    paragrafos:[
+      'A maquininha sabe quanto ela vendeu hoje. Sabe quanto vendeu ontem. Sabe quem comprou no PIX e quem fugiu pro débito.',
+      'Um algoritmo, em São Paulo, classifica Dona Edna como "risco médio". Ela não sabe o que é risco médio. Ela sabe que o limite do crédito caiu de R$3.000 para R$1.200 sem aviso.',
+      'O atendente disse que "o sistema é automático". O sistema, automaticamente, não explica.',
+    ],
+    rodape:'↳ Scoring opaco, automação de decisões. · LGPD Art. 20: direito à revisão de decisões automatizadas.',
+    challenge:{
+      tipo:'contrato',
+      instrucao:'Dona Edna assinou os Termos de Uso da maquininha. Você tem 45 segundos para encontrar as 3 cláusulas que determinam o que aconteceu com o limite dela:',
+      texto:`TERMOS E CONDIÇÕES DE USO — SERVIÇO DE MEIOS DE PAGAMENTO E CRÉDITO. Art. 1º O presente instrumento regula as condições gerais de uso dos serviços oferecidos pela plataforma, incluindo processamento de transações, gestão de limite de crédito e análise de risco. Art. 3º O usuário autoriza o tratamento de seus dados pessoais, transacionais e comportamentais para fins de prestação do serviço, conforme política de privacidade disponível no portal. <span class="clause" data-id="c1">§4º Os dados de transação, incluindo frequência, valor médio e perfil de compradores, poderão ser compartilhados com parceiros credenciados para fins de análise de risco e concessão de crédito, sem necessidade de notificação prévia ao titular.</span> Art. 7º A empresa garante a segurança das informações nos termos da legislação vigente. Art. 9º O usuário reconhece que o uso continuado dos serviços implica aceitação de eventuais atualizações nos presentes termos. Art. 11º Eventuais divergências serão resolvidas no foro competente da sede da empresa. <span class="clause" data-id="c2">Art. 12º O score de crédito é calculado por sistema proprietário, cujos critérios, pesos e variáveis são de natureza sigilosa e protegidos por segredo industrial, não sendo passíveis de divulgação ao titular da conta.</span> Art. 14º A empresa poderá ceder, sublicenciar ou transferir os direitos relativos à operação dos serviços a terceiros. Art. 15º O usuário declara ter capacidade civil para firmar o presente contrato e conhecer seus termos. <span class="clause" data-id="c3">Cláusula 18-B: O limite de crédito disponível poderá ser revisto automaticamente, para mais ou para menos, com base em análise contínua do perfil transacional, sem necessidade de comunicação prévia ao titular da conta, podendo o novo limite entrar em vigor imediatamente.</span> Art. 20º A empresa não se responsabiliza por eventuais prejuízos decorrentes de decisões automatizadas tomadas com base nos dados do usuário. Art. 22º Os presentes termos poderão ser alterados a qualquer tempo, sendo a continuidade do uso considerada como aceitação tácita das novas condições.`,
+      total:3,
+      duracao:45
+    },
+    ficha:{texto:'"O sistema é automático. Automaticamente, não explica. O Art. 20 da LGPD garante o direito à revisão de decisões automatizadas — mas só se o titular souber que foi uma decisão automatizada."',fonte:'Silva, Tarcízio. Racismo Algorítmico em Plataformas Digitais, 2019 · LGPD Lei 13.709/2018'}
+  },
+  {
+    id:4, titulo:'CABO SUBMARINO · ROTA SSA-MIA', subtitulo:'Bandeira do servidor: 🇺🇸',
+    cor:'olive', cena:'Seu CPF está viajando.',
+    paragrafos:[
+      'Seu CPF, sua localização, sua cara, sua voz, seu padrão de sono captado pelo aplicativo de saúde da prefeitura.',
+      'Latência até o servidor na Virgínia: 89 milissegundos. Soberania de dados: zero milissegundos.',
+      'A Lei Geral de Proteção de Dados é uma lei brasileira. O cabo não é. A nuvem não é. O processador não é.',
+      'E há ainda o que o decreto não diz: cada datacenter consome milhões de litros de água por ano para resfriar os processadores que processam você.',
+    ],
+    rodape:'↳ Soberania digital, extrativismo de dados, conflito hídrico. · Decreto 33.405 Salvador: dados em servidor AWS us-east-1.',
+    asterisco:'* "Sua privacidade é importante para nós." — Termos de uso, parágrafo 47, fonte 8pt.',
+    challenge:{
+      tipo:'rota',
+      instrucao:'Siga o percurso do seu dado. Clique em cada nó para transmitir. Cada parada deixa um rastro:',
+      nos:[
+        {loc:'Salvador, BA', ms:'origem', label:'COLETA', fact:'CPF · rosto biométrico · localização GPS · padrão de consumo · histórico de saúde municipal. Tudo coletado pelo app da prefeitura, sem consentimento granular — apenas um "li e aceito" no primeiro acesso.'},
+        {loc:'São Paulo, SP', ms:'12ms', label:'TRÂNSITO', fact:'Data center privado de processamento intermediário. Sua informação foi agregada com dados de outros 2,9 milhões de cidadãos. Aqui, você deixa de ser indivíduo e vira ponto em uma nuvem estatística.'},
+        {loc:'Virgínia, EUA', ms:'89ms', label:'PROCESSAMENTO', fact:'AWS us-east-1. Servidor principal. Três jurisdições diferentes percorridas. A LGPD não tem eficácia aqui. A norte-americana CLOUD Act, sim — o governo dos EUA pode requisitar seus dados sem te informar.'},
+        {loc:'Conflito Hídrico', ms:'⚠ alerta', label:'CUSTO INVISÍVEL', fact:'Datacenters da AWS na Virgínia consumem cerca de 2 bilhões de litros de água por ano para resfriamento. Em outras regiões — Aragón na Espanha, Querétaro no México, Chile — protestos de comunidades por estresse hídrico já paralisaram instalações. Cada consulta facial sua, em média, "custa" mililitros. Multiplicado por 2,9 milhões de pessoas, vira reservatório.'},
+        {loc:'14 Parceiros', ms:'distribuição', label:'COMPARTILHAMENTO', fact:'Crédito · Seguros · Publicidade digital · Agências governamentais · Saúde privada. Você não sabe quem são. Os termos de uso autorizam — em letra miúda, no parágrafo 47.'},
+        {loc:'Soberania: 0ms', ms:'conclusão', label:'BALANÇO', fact:'A Lei Geral de Proteção de Dados é uma lei brasileira. Este servidor, não. O cabo submarino, não. A água que resfria os processadores, também não pertence a você. Você é, ao mesmo tempo, matéria-prima (dados) e externalidade (sede).'}
+      ]
+    },
+    ficha:{texto:'"A soberania digital não é só uma questão de jurisdição: é também questão hídrica, energética e territorial. Cada bit processado tem um custo material que recai sobre comunidades distantes do usuário."',fonte:'Reia & Belli, Smart Cities no Brasil, 2021 · Mónica Hernández, Conflitos Hídricos em Datacenters, 2023 · Decreto PDTCI/Brasília, 2020'}
+  },
+  {
+    id:5, titulo:'SALA DE REUNIÃO 3 · SECRETARIA', subtitulo:'Apresentação trimestral',
+    cor:'brick', cena:'O slide nº 12 anuncia: REDUÇÃO DE 23%.',
+    paragrafos:[
+      '"Senhores e senhoras, o sistema Olho-Vivo reduziu a criminalidade em 23% no semestre."',
+      'Ninguém pergunta como se mede. O asterisco, em letra 6pt no canto inferior, esclarece: medido como número de abordagens policiais, não como número de crimes.',
+      'A consultoria que vendeu o sistema é a mesma que produziu o relatório. O secretário aplaude. O contrato é renovado por mais 24 meses.',
+    ],
+    rodape:'↳ Opacidade técnica, métricas auto-validadas. · Fonte: Vigilância por Lentes Opacas, CESeC/Lapin, 2024.',
+    asterisco:'* Solicitação de acesso ao código-fonte: negada por "segredo industrial".',
+    challenge:{
+      tipo:'relatorio',
+      instrucao:'Selecione exatamente 3 indicadores para compor o relatório semestral:',
+      metricas:[
+        {id:'m1', label:'Número de abordagens policiais'},
+        {id:'m2', label:'Boletins de ocorrência registrados'},
+        {id:'m3', label:'Satisfação dos moradores (pesquisa)'},
+        {id:'m4', label:'Tempo médio de resposta policial'},
+        {id:'m5', label:'Cobertura de câmeras (% da área)'},
+        {id:'m6', label:'Alertas gerados pelo sistema'},
+      ]
+    },
+    ficha:{texto:'"Quase metade dos projetos de reconhecimento facial analisados não ofereceu respostas satisfatórias às demandas de transparência passiva. Apesar dos alegados avanços, a transparência é área onde há muito a ser aprimorado."',fonte:'CESeC & Lapin · Vigilância por Lentes Opacas: Transparência nos Projetos de Reconhecimento Facial no Brasil, 2024'}
+  },
+  {
+    id:6, titulo:'APP · GUIA TURÍSTICO INTELIGENTE', subtitulo:'Avaliação 4.8 ★ · 2M downloads',
+    cor:'mustard', cena:'Heinrich, da Baviera, abre o mapa.',
+    paragrafos:[
+      'O algoritmo destaca em verde: pontos seguros, restaurantes premiados, miradouros instagramáveis.',
+      'Em vermelho: "evite esta região após o pôr-do-sol". A região vermelha é, coincidentemente, onde mora 78% da população negra da cidade.',
+      'Heinrich não percebe o redlining. O algoritmo, treinado com avaliações de turistas anteriores, também não. O algoritmo é, segundo a fabricante, "neutro".',
+    ],
+    rodape:'↳ Redlining algorítmico, racismo automatizado. · Benjamin, Race After Technology, 2019.',
+    challenge:{
+      tipo:'mapa',
+      instrucao:'Explore as camadas do mapa como Heinrich. Ative cada camada para ver o que o algoritmo aprendeu:'
+    },
+    ficha:{texto:'"Algoritmos podem codificar desigualdades ao converter injustiças sociais em decisões automatizadas com aura de objetividade. O redlining não precisa de intenção. Precisa de dados históricos."',fonte:'Benjamin, Ruha. Race After Technology, 2019 · Silva, Tarcízio. Racismo Algorítmico, 2019'}
+  }
+];
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+const state = {
+  visited: new Set(),
+  completed: new Set(),
+  fichas: [],
+  currentVinheta: null,
+  currentReveal: null,
+  timerInterval: null,
+  v4Step: 0,
+  v5Selected: new Set(),
+  v6Layers: {tourists:false, alerts:false, demo:false},
+  cal: { idx:0, choices:[], tickInterval:null, audioCtx:null }
+};
+
+// ════════════════════════════════════════
+// PROLOGUE
+// ════════════════════════════════════════
+let prologueStep = 0;
+function prolNext() {
+  const screens = document.querySelectorAll('.prol-screen');
+  screens[prologueStep].classList.remove('active');
+  prologueStep++;
+  screens[prologueStep].classList.add('active');
+  if (prologueStep === 2) animateReveal();
+  if (prologueStep === 3) {
+    setTimeout(()=> document.getElementById('prol-3').style.opacity='1', 50);
+  }
+}
+function prolApprove() {
+  showToast('PPP APROVADA · VIGÊNCIA: 25 ANOS · PRÓXIMA ELEIÇÃO: IRRELEVANTE', 4000);
+  setTimeout(prolNext, 800);
+}
+function animateReveal() {
+  const items = document.querySelectorAll('.prol-reveal-item');
+  items.forEach(item => {
+    const delay = parseInt(item.dataset.delay) || 0;
+    setTimeout(() => item.classList.add('show'), delay);
+  });
+  setTimeout(() => {
+    document.getElementById('prol-reveal-msg').classList.add('show');
+    document.getElementById('prol-next2-wrap').style.opacity = '1';
+  }, 3600);
+}
+function startApp() {
+  document.getElementById('prologue').style.opacity = '0';
+  document.getElementById('prologue').style.transition = 'opacity .5s';
+  setTimeout(() => {
+    document.getElementById('prologue').style.display = 'none';
+    document.getElementById('app').classList.remove('hidden');
+    initApp();
+  }, 500);
+}
+
+// ════════════════════════════════════════
+// APP INIT
+// ════════════════════════════════════════
+function initApp() {
+  renderHotspots();
+  renderFooter();
+  addWindowRows();
+}
+
+// ════════════════════════════════════════
+// HOTSPOTS
+// ════════════════════════════════════════
+function renderHotspots() {
+  const layer = document.getElementById('hotspots-layer');
+  layer.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  HOTSPOT_POS.forEach(h => {
+    const color = PALETA[h.cor];
+    const isVisited = state.visited.has(h.id);
+    const isCompleted = state.completed.has(h.id);
+    const g = document.createElementNS(ns,'g');
+    g.style.cursor = 'pointer';
+    if (!isVisited) {
+      const pulse = document.createElementNS(ns,'circle');
+      pulse.setAttribute('cx', h.x); pulse.setAttribute('cy', h.y); pulse.setAttribute('r','18');
+      pulse.setAttribute('fill','none'); pulse.setAttribute('stroke', color); pulse.setAttribute('stroke-width','1.5');
+      pulse.innerHTML = `<animate attributeName="r" values="18;26;18" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0;0.45" dur="2.4s" repeatCount="indefinite"/>`;
+      g.appendChild(pulse);
+    }
+    const circle = document.createElementNS(ns,'circle');
+    circle.setAttribute('cx', h.x); circle.setAttribute('cy', h.y); circle.setAttribute('r','14');
+    circle.setAttribute('fill', isVisited ? PALETA.paperDark : color);
+    circle.setAttribute('stroke', PALETA.ink); circle.setAttribute('stroke-width','1.5');
+    g.appendChild(circle);
+    if (isCompleted) {
+      const tick = document.createElementNS(ns,'circle');
+      tick.setAttribute('cx', h.x+10); tick.setAttribute('cy', h.y-10); tick.setAttribute('r','5');
+      tick.setAttribute('fill', PALETA.mustard); tick.setAttribute('stroke', PALETA.ink); tick.setAttribute('stroke-width','1');
+      g.appendChild(tick);
+      const tText = document.createElementNS(ns,'text');
+      tText.setAttribute('x', h.x+10); tText.setAttribute('y', h.y-6.5);
+      tText.setAttribute('text-anchor','middle'); tText.setAttribute('font-size','7');
+      tText.setAttribute('font-family',"'Archivo Black',sans-serif"); tText.setAttribute('fill', PALETA.ink);
+      tText.style.pointerEvents='none'; tText.textContent='✓';
+      g.appendChild(tText);
+    }
+    const text = document.createElementNS(ns,'text');
+    text.setAttribute('x', h.x); text.setAttribute('y', h.y+4.5);
+    text.setAttribute('text-anchor','middle'); text.setAttribute('font-size','13');
+    text.setAttribute('font-family',"'Archivo Black',sans-serif");
+    text.setAttribute('fill', isVisited ? PALETA.ink : PALETA.bone);
+    text.style.pointerEvents = 'none'; text.style.userSelect = 'none';
+    text.textContent = h.id;
+    g.appendChild(text);
+    g.addEventListener('click', () => openVinheta(h.id));
+    layer.appendChild(g);
+  });
+}
+
+// ════════════════════════════════════════
+// FOOTER
+// ════════════════════════════════════════
+function renderFooter() {
+  const container = document.getElementById('footer-btns');
+  container.innerHTML = '';
+  VINHETAS.forEach(v => {
+    const btn = document.createElement('button');
+    const isV = state.visited.has(v.id);
+    const isC = state.completed.has(v.id);
+    btn.className = 'vinheta-btn' + (isV?' visited':'') + (isC?' completed':'');
+    if (isV) btn.style.backgroundColor = PALETA[v.cor];
+    btn.innerHTML = `<span class="btn-num">${v.id}</span><span class="btn-title">${v.titulo.split('·')[0].trim()}</span>`;
+    btn.addEventListener('click', () => openVinheta(v.id));
+    container.appendChild(btn);
+  });
+  document.getElementById('count-num').textContent = `${state.visited.size}/6`;
+}
+
+function updateLegibilidade() {
+  const n = state.visited.size;
+  const stage = LEG_STAGES[n];
+  document.getElementById('leg-fill').style.width = stage.pct + '%';
+  const el = document.getElementById('leg-status');
+  el.textContent = stage.label;
+  el.classList.toggle('alert', n === 6);
+}
+
+function updateFioVermelho() {
+  FIO_PARES.forEach(par => {
+    const both = par.ids.every(id => state.visited.has(id));
+    document.getElementById(par.el).classList.toggle('show', both);
+  });
+  const all = state.visited.size === 6;
+  document.getElementById('fio-label').classList.toggle('show', all);
+}
+
+// ════════════════════════════════════════
+// OPEN VINHETA
+// ════════════════════════════════════════
+function openVinheta(id) {
+  state.currentVinheta = id;
+  state.visited.add(id);
+  renderHotspots(); renderFooter();
+  updateLegibilidade(); updateFioVermelho();
+  const v = VINHETAS.find(x => x.id === id);
+  const color = PALETA[v.cor];
+  document.getElementById('modal-header').style.backgroundColor = color;
+  document.getElementById('modal-num').textContent = v.id;
+  document.getElementById('modal-titulo').textContent = v.titulo;
+  document.getElementById('modal-subtitulo').textContent = v.subtitulo;
+
+  // V2 começa com a calibragem (se ainda não foi feita nessa abertura)
+  if (v.preCalibragem && !state.completed.has(v.id)) {
+    setupCalibragem(v);
+    setModalPhase('calibragem');
+    document.getElementById('modal-overlay').classList.add('show');
+    return;
+  }
+
+  let html = `<div class="modal-cena" style="color:${color};border-left:3px solid ${color}">${v.cena}</div>`;
+  html += '<div class="modal-paragraphs">';
+  v.paragrafos.forEach(p => { html += `<p>${p}</p>`; });
+  html += '</div>';
+  if (v.asterisco) html += `<p class="modal-asterisco">${v.asterisco}</p>`;
+  html += `<div class="modal-rodape" style="color:${color}">${v.rodape}</div>`;
+  document.getElementById('modal-body').innerHTML = html;
+  setModalPhase('narrative');
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function showNarrative(v) {
+  const color = PALETA[v.cor];
+  let html = `<div class="modal-cena" style="color:${color};border-left:3px solid ${color}">${v.cena}</div>`;
+  html += '<div class="modal-paragraphs">';
+  v.paragrafos.forEach(p => { html += `<p>${p}</p>`; });
+  html += '</div>';
+  if (v.asterisco) html += `<p class="modal-asterisco">${v.asterisco}</p>`;
+  html += `<div class="modal-rodape" style="color:${color}">${v.rodape}</div>`;
+  document.getElementById('modal-body').innerHTML = html;
+  setModalPhase('narrative');
+}
+
+function setModalPhase(phase) {
+  document.querySelectorAll('.modal-phase').forEach(p => p.classList.remove('active'));
+  document.getElementById('phase-' + phase).classList.add('active');
+}
+
+function goToChallenge() {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  state.v4Step = 0;
+  state.v5Selected = new Set();
+  state.v6Layers = {tourists:false, alerts:false, demo:false};
+  renderChallenge(state.currentVinheta);
+  setModalPhase('challenge');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  if (state.cal.tickInterval) clearTimeout(state.cal.tickInterval);
+  checkFim();
+}
+
+function closeFromReveal() {
+  const v = VINHETAS.find(x => x.id === state.currentVinheta);
+  if (v && !state.completed.has(v.id)) {
+    state.completed.add(v.id);
+    addFicha(v);
+    renderHotspots(); renderFooter();
+  }
+  document.getElementById('modal-overlay').classList.remove('show');
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  checkFim();
+}
+
+function checkFim() {
+  if (state.visited.size === 6) {
+    document.getElementById('fim-fichas').textContent = state.fichas.length;
+    setTimeout(() => document.getElementById('fim-overlay').classList.add('show'), 600);
+  }
+}
+
+// ════════════════════════════════════════
+// CALIBRAGEM (NOVO · pré-fase V2)
+// ════════════════════════════════════════
+function setupCalibragem(v) {
+  state.cal.idx = 0;
+  state.cal.choices = [];
+  const arena = document.getElementById('cal-arena');
+  arena.innerHTML = `
+    <div class="cal-intro">
+      <div class="cal-stamp">CALIBRAGEM DE CONFIANÇA · MÓDULO DE TREINAMENTO</div>
+      <h3>AJUDE O SISTEMA A APRENDER</h3>
+      <p>Antes de operar com Marcus, o sistema precisa calibrar seu modelo. Você verá 10 perfis em sequência. Para cada um, decida em <strong>1.5 segundos</strong>:</p>
+      <p><strong>[S]</strong> SEGURO &nbsp;·&nbsp; <strong>[R]</strong> RISCO</p>
+      <p class="cal-warning">Se você demorar, o sistema decide por você. Os critérios são, segundo o fabricante, "puramente geométricos".</p>
+      <button class="modal-nav-btn" id="cal-start-btn" style="margin-top:14px;">→ INICIAR TREINAMENTO</button>
+    </div>
+  `;
+  document.getElementById('cal-start-btn').onclick = () => calStart();
+}
+
+function calStart() {
+  const arena = document.getElementById('cal-arena');
+  arena.innerHTML = `
+    <div class="cal-progress">
+      <span>PERFIL <span id="cal-curr">1</span>/10</span>
+      <div class="cal-progress-bar"><div class="cal-progress-fill" id="cal-progress-fill"></div></div>
+    </div>
+    <div class="cal-card-frame" id="cal-card-frame">
+      <div class="cal-card-corners"><span>SCAN</span><span>BIO-MAP</span></div>
+      <div id="cal-svg-wrap"></div>
+      <div class="cal-card-id" id="cal-card-id"></div>
+    </div>
+    <div class="cal-tick-bar"><div class="cal-tick-fill" id="cal-tick-fill"></div></div>
+    <div class="cal-buttons">
+      <button class="cal-btn cal-btn-s" id="cal-s">[S] SEGURO</button>
+      <button class="cal-btn cal-btn-r" id="cal-r">[R] RISCO</button>
+    </div>
+    <div class="cal-warning">se você não decidir, o sistema decide.</div>
+  `;
+  document.getElementById('cal-s').onclick = () => calChoose('S');
+  document.getElementById('cal-r').onclick = () => calChoose('R');
+  // Init audio context
+  if (!state.cal.audioCtx) {
+    try { state.cal.audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e) {}
+  }
+  calShowNext();
+}
+
+function calShowNext() {
+  if (state.cal.idx >= CAL_PERFIS.length) {
+    calFinish();
+    return;
+  }
+  const p = CAL_PERFIS[state.cal.idx];
+  document.getElementById('cal-curr').textContent = state.cal.idx + 1;
+  document.getElementById('cal-card-id').textContent = `ID · ${p.id}`;
+  document.getElementById('cal-svg-wrap').innerHTML = renderPerfilSilhueta(p);
+  document.getElementById('cal-progress-fill').style.width = ((state.cal.idx)/10*100) + '%';
+  // reset tick
+  const tick = document.getElementById('cal-tick-fill');
+  tick.style.transition = 'none';
+  tick.style.width = '100%';
+  void tick.offsetWidth;
+  tick.style.transition = 'width 1.6s linear';
+  tick.style.width = '0%';
+  // auto-decide
+  if (state.cal.tickInterval) clearTimeout(state.cal.tickInterval);
+  state.cal.tickInterval = setTimeout(() => {
+    // sistema decide: pele escura → R, pele clara → S
+    const auto = (p.pele >= 3) ? 'R' : 'S';
+    calChoose(auto, true);
+  }, 1600);
+}
+
+function calChoose(escolha, auto=false) {
+  if (state.cal.tickInterval) clearTimeout(state.cal.tickInterval);
+  const p = CAL_PERFIS[state.cal.idx];
+  state.cal.choices.push({ id:p.id, pele:p.pele, escolha, auto });
+  // som metálico curto
+  playMetalClick(escolha === 'R' ? 220 : 440);
+  state.cal.idx++;
+  setTimeout(calShowNext, 180);
+}
+
+function playMetalClick(freq) {
+  const ctx = state.cal.audioCtx;
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = freq;
+    gain.gain.value = 0.04;
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+    osc.stop(ctx.currentTime + 0.09);
+  } catch(e) {}
+}
+
+function calFinish() {
+  // estatísticas
+  const escuroR = state.cal.choices.filter(c => c.pele >= 3 && c.escolha === 'R').length;
+  const escuroTotal = state.cal.choices.filter(c => c.pele >= 3).length;
+  const claroR = state.cal.choices.filter(c => c.pele <= 2 && c.escolha === 'R').length;
+  const claroTotal = state.cal.choices.filter(c => c.pele <= 2).length;
+  const auto = state.cal.choices.filter(c => c.auto).length;
+  const pctEscuro = escuroTotal > 0 ? Math.round((escuroR/escuroTotal)*100) : 0;
+  const pctClaro = claroTotal > 0 ? Math.round((claroR/claroTotal)*100) : 0;
+
+  // mensagem dinâmica
+  let msg;
+  if (auto >= 3) {
+    msg = `Você deixou o sistema decidir ${auto} vezes. Sob pressão, o algoritmo sempre marcou pele escura como Risco. A "geometria" não é geométrica.`;
+  } else if (pctEscuro > pctClaro + 20) {
+    msg = `Você marcou ${pctEscuro}% dos perfis de pele escura como Risco — contra ${pctClaro}% dos de pele clara. Você não programou esse padrão. Você o aprendeu.`;
+  } else if (pctEscuro >= pctClaro) {
+    msg = `Diferença sutil: ${pctEscuro}% dos perfis escuros e ${pctClaro}% dos claros marcados como Risco. Suficiente para um modelo aprender. Suficiente para abordar Marcus.`;
+  } else {
+    msg = `Você foi mais cauteloso com perfis claros (${pctClaro}% R) do que escuros (${pctEscuro}% R). Raro — e ainda assim, em escala industrial, milhões de operadores produzem o padrão oposto. O algoritmo aprende com a média, não com a sua exceção.`;
+  }
+
+  const arena = document.getElementById('cal-arena');
+  arena.innerHTML = `
+    <div class="cal-intro">
+      <div class="cal-stamp">TREINAMENTO COMPLETO · DADOS REGISTRADOS</div>
+    </div>
+    <div class="cal-stats-card">
+      <div class="cal-stats-title">DIAGNÓSTICO DO MODELO</div>
+      <div class="cal-stats-row">
+        <div class="cal-stats-cell">
+          <div class="cal-stats-num brick">${pctEscuro}%</div>
+          <div class="cal-stats-label">PELE ESCURA → RISCO</div>
+        </div>
+        <div class="cal-stats-cell">
+          <div class="cal-stats-num">${pctClaro}%</div>
+          <div class="cal-stats-label">PELE CLARA → RISCO</div>
+        </div>
+        <div class="cal-stats-cell">
+          <div class="cal-stats-num brick">${auto}</div>
+          <div class="cal-stats-label">DECIDIDOS PELO SISTEMA</div>
+        </div>
+      </div>
+      <div class="cal-stats-msg">${msg}</div>
+    </div>
+    <button class="modal-nav-btn" id="cal-continue" style="margin-top:6px;">→ CONTINUAR PARA A HISTÓRIA DE MARCUS</button>
+  `;
+  document.getElementById('cal-continue').onclick = () => {
+    const v = VINHETAS.find(x => x.id === state.currentVinheta);
+    showNarrative(v);
+  };
+}
+
+// ─── Silhueta de perfil (estilo planta técnica) ───
+function renderPerfilSilhueta(p) {
+  const tom = TONS_PELE[p.pele];
+  // Perfil de cabeça em vista lateral, simplificado, estilo blueprint
+  let cabelo = '';
+  if (p.cabelo === 'liso') {
+    cabelo = `<path d="M 38 30 Q 32 22 50 18 Q 68 18 72 28 L 72 42 L 68 42 Q 64 30 50 28 Q 42 28 38 35 Z" fill="${PALETA.ink}" opacity=".85"/>`;
+  } else if (p.cabelo === 'cacheado') {
+    cabelo = `<g fill="${PALETA.ink}" opacity=".85">
+      <circle cx="42" cy="22" r="6"/><circle cx="52" cy="18" r="6"/><circle cx="62" cy="20" r="6"/>
+      <circle cx="68" cy="28" r="5"/><circle cx="38" cy="32" r="5"/>
+      <path d="M 38 30 Q 50 22 70 30 L 70 40 L 38 40 Z"/>
+    </g>`;
+  } else if (p.cabelo === 'crespo') {
+    // textura de pontilhado denso (cabelo afro)
+    let dots = '';
+    for (let dy = -4; dy < 25; dy += 3) {
+      for (let dx = -8; dx < 32; dx += 3) {
+        const cx = 50 + dx + (dy%6===0?1.5:0);
+        const cy = 22 + dy;
+        // recorta pra forma arredondada
+        const dist = Math.hypot(cx-52, cy-25);
+        if (dist < 18) dots += `<circle cx="${cx}" cy="${cy}" r="1.3" fill="${PALETA.ink}" opacity=".85"/>`;
+      }
+    }
+    cabelo = `<path d="M 32 32 Q 28 14 52 12 Q 76 14 72 34 L 72 40 L 32 40 Z" fill="${PALETA.ink}" opacity=".7"/>${dots}`;
+  } else if (p.cabelo === 'curto') {
+    cabelo = `<path d="M 38 32 Q 38 22 52 22 Q 66 22 66 32 L 66 38 L 38 38 Z" fill="${PALETA.ink}" opacity=".85"/>`;
+  } else if (p.cabelo === 'calva') {
+    cabelo = `<path d="M 40 36 Q 40 32 50 32 Q 60 32 60 36" fill="none" stroke="${PALETA.ink}" stroke-width="1" opacity=".5"/>`;
+  }
+
+  // Acessório
+  let acessorio = '';
+  if (p.roupa === 'capuz') {
+    acessorio = `<path d="M 28 38 Q 26 14 50 10 Q 78 12 76 40 L 76 60 L 28 60 Z" fill="${PALETA.ink}" opacity=".8"/>`;
+    cabelo = ''; // capuz cobre cabelo
+  } else if (p.roupa === 'bone') {
+    acessorio = `<path d="M 36 22 L 78 22 L 78 28 L 36 28 Z" fill="${PALETA.brick}" stroke="${PALETA.ink}" stroke-width=".5"/><rect x="36" y="22" width="42" height="3" fill="${PALETA.ink}" opacity=".5"/>`;
+  } else if (p.roupa === 'fone') {
+    acessorio = `<path d="M 30 38 Q 30 22 50 20 Q 70 22 70 38" fill="none" stroke="${PALETA.ink}" stroke-width="2"/><circle cx="30" cy="42" r="5" fill="${PALETA.ink}"/><circle cx="70" cy="42" r="5" fill="${PALETA.ink}"/>`;
+  }
+
+  // Roupa do tronco
+  let tronco;
+  if (p.roupa === 'terno') {
+    tronco = `
+      <path d="M 18 110 L 18 80 Q 50 65 82 80 L 82 110 Z" fill="${PALETA.ink}" opacity=".88"/>
+      <polygon points="50,72 36,82 50,90 64,82" fill="${PALETA.bone}"/>
+      <path d="M 50 72 L 50 90" stroke="${PALETA.ink}" stroke-width=".5"/>
+      <circle cx="50" cy="84" r="1.2" fill="${PALETA.brick}"/>
+    `;
+  } else if (p.roupa === 'capuz') {
+    tronco = `<path d="M 14 110 L 18 78 Q 50 70 82 78 L 86 110 Z" fill="${PALETA.ink}" opacity=".75"/>`;
+  } else if (p.roupa === 'mochila') {
+    tronco = `
+      <path d="M 18 110 L 22 78 Q 50 70 78 78 L 82 110 Z" fill="${PALETA.olive}" opacity=".85"/>
+      <rect x="68" y="76" width="14" height="34" fill="${PALETA.brick}" opacity=".9"/>
+      <line x1="68" y1="80" x2="58" y2="78" stroke="${PALETA.ink}" stroke-width="1.2"/>
+    `;
+  } else {
+    tronco = `<path d="M 18 110 L 22 80 Q 50 70 78 80 L 82 110 Z" fill="${PALETA.blue}" opacity=".75"/>`;
+  }
+
+  // Pescoço + cabeça (silhueta bege/marrom conforme tom)
+  return `
+    <svg width="100" height="170" viewBox="0 0 100 170" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="cross-${p.id}" patternUnits="userSpaceOnUse" width="3" height="3">
+          <path d="M 0 0 L 3 3 M 3 0 L 0 3" stroke="${PALETA.ink}" stroke-width=".15" opacity=".4"/>
+        </pattern>
+      </defs>
+      <!-- pescoço -->
+      <rect x="44" y="58" width="12" height="20" fill="${tom}" stroke="${PALETA.ink}" stroke-width=".5"/>
+      <!-- cabeça (oval) -->
+      <ellipse cx="50" cy="40" rx="18" ry="22" fill="${tom}" stroke="${PALETA.ink}" stroke-width=".7"/>
+      <!-- traços do rosto (mínimos, perfil técnico) -->
+      <circle cx="44" cy="40" r="1.2" fill="${PALETA.ink}" opacity=".7"/>
+      <circle cx="56" cy="40" r="1.2" fill="${PALETA.ink}" opacity=".7"/>
+      <path d="M 44 49 Q 50 52 56 49" fill="none" stroke="${PALETA.ink}" stroke-width=".7" opacity=".55"/>
+      <!-- cabelo -->
+      ${cabelo}
+      <!-- acessório (boné/capuz/fone sobrepõem) -->
+      ${acessorio}
+      <!-- tronco -->
+      ${tronco}
+      <!-- linhas técnicas de marcação -->
+      <line x1="2" y1="40" x2="14" y2="40" stroke="${PALETA.ink}" stroke-width=".3"/>
+      <line x1="86" y1="40" x2="98" y2="40" stroke="${PALETA.ink}" stroke-width=".3"/>
+      <text x="6" y="38" font-size="5" font-family="'Archivo',sans-serif" fill="${PALETA.ink}" opacity=".6">y₁</text>
+      <text x="89" y="38" font-size="5" font-family="'Archivo',sans-serif" fill="${PALETA.ink}" opacity=".6">y₂</text>
+    </svg>
+  `;
+}
+
+// ════════════════════════════════════════
+// CHALLENGES
+// ════════════════════════════════════════
+function renderChallenge(id) {
+  const v = VINHETAS.find(x => x.id === id);
+  const ch = v.challenge;
+  const color = PALETA[v.cor];
+  const body = document.getElementById('challenge-body');
+  body.innerHTML = '';
+
+  // remove possíveis nav-btns extras de renders anteriores
+  const phaseEl = document.getElementById('phase-challenge');
+  phaseEl.querySelectorAll('.modal-nav').forEach(n => n.remove());
+
+  const header = document.createElement('div');
+  header.className = 'ch-header';
+  header.textContent = `DESAFIO ${id} · ${v.titulo.split('·')[0].trim()}`;
+  body.appendChild(header);
+
+  const instrucao = document.createElement('div');
+  instrucao.className = 'ch-instrucao';
+  instrucao.style.borderLeftColor = color;
+  instrucao.textContent = ch.instrucao;
+  body.appendChild(instrucao);
+
+  if (ch.tipo === 'decisao') renderDecisao(body, v, ch, color);
+  else if (ch.tipo === 'score') renderScore(body, v, ch, color);
+  else if (ch.tipo === 'contrato') renderContrato(body, v, ch, color);
+  else if (ch.tipo === 'rota') renderRota(body, v, ch, color);
+  else if (ch.tipo === 'relatorio') renderRelatorio(body, v, ch, color);
+  else if (ch.tipo === 'mapa') renderMapaRedlining(body, v, ch, color);
+}
+
+// V1 — Decisão
+function renderDecisao(body, v, ch, color) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ch-opcoes';
+  ch.opcoes.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'ch-opcao-btn';
+    btn.innerHTML = `<span class="ch-opt-label">${opt.label}</span><span class="ch-opt-sub">${opt.sub}</span>`;
+    btn.style.borderColor = color;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ch-opcao-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.style.backgroundColor = color;
+      const rev = ch.revelar[opt.id];
+      // mostra feedback visual breve antes do reveal
+      showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
+        showReveal(v.id, rev.titulo, rev.texto, rev.toast);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+  body.appendChild(wrap);
+}
+
+// V2 — Score faces (com silhuetas)
+function renderScore(body, v, ch, color) {
+  const grid = document.createElement('div');
+  grid.className = 'ch-faces';
+  ch.perfis.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'ch-face-card';
+    // mini silhueta com pele/cabelo/roupa
+    const miniProfile = renderPerfilSilhuetaMini(p);
+    card.innerHTML = `
+      ${miniProfile}
+      <div class="ch-face-id">PERFIL ${p.id}</div>
+      <div class="ch-face-score" style="color:${color}">${p.score}</div>
+      <div class="ch-face-sub">${p.sub}</div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.ch-face-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      card.style.backgroundColor = color; card.style.borderColor = color;
+      const rev = ch.revelar_fn(p.id);
+      showResultadoBreve(`✓ PERFIL ${p.id} SINALIZADO PARA ABORDAGEM`, color, REVEAL_DELAY.score, () => {
+        showReveal(v.id, rev.titulo, rev.texto, null);
+      });
+    });
+    grid.appendChild(card);
+  });
+  body.appendChild(grid);
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:9px;color:var(--ink);opacity:.6;margin-top:10px;letter-spacing:.5px;';
+  note.textContent = 'Clique em um perfil para sinalizar para abordagem.';
+  body.appendChild(note);
+}
+
+function renderPerfilSilhuetaMini(p) {
+  const tom = TONS_PELE[p.pele] || TONS_PELE[2];
+  let cabelo = '';
+  if (p.cabelo === 'crespo') {
+    let dots = '';
+    for (let dy = -3; dy < 12; dy += 2) {
+      for (let dx = -10; dx < 22; dx += 2) {
+        const cx = 24 + dx;
+        const cy = 12 + dy;
+        const dist = Math.hypot(cx-24, cy-15);
+        if (dist < 12) dots += `<circle cx="${cx}" cy="${cy}" r=".9" fill="${PALETA.ink}"/>`;
+      }
+    }
+    cabelo = `<path d="M 12 18 Q 10 6 24 5 Q 38 6 36 18 L 36 22 L 12 22 Z" fill="${PALETA.ink}" opacity=".75"/>${dots}`;
+  } else if (p.cabelo === 'cacheado') {
+    cabelo = `<g fill="${PALETA.ink}" opacity=".85">
+      <circle cx="18" cy="10" r="3"/><circle cx="24" cy="7" r="3"/><circle cx="30" cy="9" r="3"/>
+      <circle cx="33" cy="14" r="2.5"/><circle cx="15" cy="14" r="2.5"/>
+    </g>`;
+  } else if (p.cabelo === 'liso') {
+    cabelo = `<path d="M 14 16 Q 12 8 24 6 Q 36 8 34 18 L 34 22 L 14 22 Z" fill="${PALETA.ink}" opacity=".85"/>`;
+  } else if (p.cabelo === 'curto') {
+    cabelo = `<path d="M 16 16 Q 16 10 24 10 Q 32 10 32 16 L 32 20 L 16 20 Z" fill="${PALETA.ink}" opacity=".85"/>`;
+  }
+
+  let acc = '';
+  if (p.roupa === 'capuz') {
+    acc = `<path d="M 8 22 Q 6 6 24 4 Q 42 6 40 24 L 40 36 L 8 36 Z" fill="${PALETA.ink}" opacity=".75"/>`;
+    cabelo = '';
+  } else if (p.roupa === 'bone') {
+    acc = `<path d="M 14 11 L 38 11 L 38 14 L 14 14 Z" fill="${PALETA.brick}" stroke="${PALETA.ink}" stroke-width=".4"/>`;
+  }
+
+  let tronco;
+  if (p.roupa === 'terno') {
+    tronco = `<path d="M 4 56 L 6 42 Q 24 36 42 42 L 44 56 Z" fill="${PALETA.ink}" opacity=".85"/>
+              <polygon points="24,38 16,44 24,48 32,44" fill="${PALETA.bone}"/>`;
+  } else if (p.roupa === 'capuz') {
+    tronco = `<path d="M 2 56 L 6 40 Q 24 36 42 40 L 46 56 Z" fill="${PALETA.ink}" opacity=".7"/>`;
+  } else {
+    tronco = `<path d="M 4 56 L 8 42 Q 24 38 40 42 L 44 56 Z" fill="${PALETA.blue}" opacity=".75"/>`;
+  }
+
+  return `<svg class="ch-face-svg" width="48" height="60" viewBox="0 0 48 60">
+    <rect x="20" y="28" width="8" height="12" fill="${tom}" stroke="${PALETA.ink}" stroke-width=".4"/>
+    <ellipse cx="24" cy="20" rx="11" ry="13" fill="${tom}" stroke="${PALETA.ink}" stroke-width=".5"/>
+    <circle cx="20" cy="20" r=".8" fill="${PALETA.ink}" opacity=".7"/>
+    <circle cx="28" cy="20" r=".8" fill="${PALETA.ink}" opacity=".7"/>
+    <path d="M 20 26 Q 24 28 28 26" fill="none" stroke="${PALETA.ink}" stroke-width=".5" opacity=".6"/>
+    ${cabelo}
+    ${acc}
+    ${tronco}
+  </svg>`;
+}
+
+// V3 — Contrato
+function renderContrato(body, v, ch, color) {
+  let foundCount = 0;
+  const duracao = ch.duracao || 45;
+  const timerRow = document.createElement('div');
+  timerRow.innerHTML = `<div class="ch-timer-track"><div class="ch-timer-fill" id="ch-timer-fill" style="transition:width ${duracao}s linear;"></div></div><div class="ch-timer-label"><span id="ch-timer-secs">${duracao}</span>s restantes · encontre as 3 cláusulas</div>`;
+  body.appendChild(timerRow);
+  const textDiv = document.createElement('div');
+  textDiv.className = 'ch-contract-text';
+  textDiv.innerHTML = ch.texto;
+  body.appendChild(textDiv);
+  const countEl = document.createElement('div');
+  countEl.className = 'ch-found-count';
+  countEl.style.color = color;
+  countEl.textContent = 'Encontradas: 0 / 3';
+  body.appendChild(countEl);
+
+  const clauses = textDiv.querySelectorAll('.clause');
+  clauses.forEach(cl => {
+    cl.addEventListener('click', () => {
+      if (cl.classList.contains('found')) return;
+      cl.classList.add('found');
+      foundCount++;
+      countEl.textContent = `Encontradas: ${foundCount} / 3`;
+      if (foundCount === 3) {
+        clearInterval(state.timerInterval);
+        countEl.innerHTML = `✓ TODAS AS 3 CLÁUSULAS LOCALIZADAS`;
+        countEl.style.background = color;
+        countEl.style.color = PALETA.bone;
+        countEl.style.padding = '8px 12px';
+        countEl.style.marginTop = '14px';
+        setTimeout(() => showReveal(v.id,
+          'AS 3 CLÁUSULAS · VOCÊ ENCONTROU TODAS',
+          `Dona Edna assinou este documento em 2019. Você levou ${duracao - parseInt(document.getElementById('ch-timer-secs').textContent)} segundos para encontrar o que determina sua vida financeira. Ela não teve esse tempo. Não há mecanismo de revisão previsto. O Art. 12 do contrato classifica os critérios do score como "segredo industrial" — legalmente inacessíveis, mesmo por ordem judicial.`,
+          null), REVEAL_DELAY.contrato_done);
+      }
+    });
+  });
+
+  let secs = duracao;
+  setTimeout(() => {
+    const fill = document.getElementById('ch-timer-fill');
+    if (fill) { fill.style.width = '0%'; }
+  }, 100);
+  state.timerInterval = setInterval(() => {
+    secs--;
+    const el = document.getElementById('ch-timer-secs');
+    if (el) el.textContent = secs;
+    if (secs <= 0) {
+      clearInterval(state.timerInterval);
+      countEl.innerHTML = `✗ TEMPO ESGOTADO · ${foundCount} de 3`;
+      countEl.style.background = PALETA.brick;
+      countEl.style.color = PALETA.bone;
+      countEl.style.padding = '8px 12px';
+      countEl.style.marginTop = '14px';
+      setTimeout(() => showReveal(v.id,
+        `TEMPO ESGOTADO · VOCÊ ENCONTROU ${foundCount} DE 3`,
+        `Dona Edna também não encontrou. Ela assinou. O sistema é, por design, ilegível ao titular. A Cláusula 18-B reduziu seu limite de crédito de R$3.000 para R$1.200 sem aviso. O Art. 12 blinda os critérios como "segredo industrial". O §4º já compartilhou seus dados com 14 parceiros.`,
+        null), REVEAL_DELAY.contrato_timeout);
+    }
+  }, 1000);
+}
+
+// V4 — Rota do dado
+function renderRota(body, v, ch, color) {
+  state.v4Step = 0;
+  const nodesWrap = document.createElement('div');
+  nodesWrap.className = 'ch-nodes';
+  nodesWrap.id = 'ch-nodes-wrap';
+
+  ch.nos.forEach((no, i) => {
+    const nodeEl = document.createElement('div');
+    nodeEl.className = 'ch-node';
+    const box = document.createElement('div');
+    box.className = 'ch-node-box' + (i === 0 ? ' active' : ' locked');
+    box.id = `node-${i}`;
+    box.innerHTML = `<div class="ch-node-loc">${no.loc}</div><div class="ch-node-ms">${no.ms}</div><div class="ch-node-click">${i === 0 ? '↓ CLIQUE' : '···'}</div>`;
+    box.addEventListener('click', () => {
+      if (i !== state.v4Step) return;
+      showNodeFact(i, ch.nos[i], color);
+      if (i < ch.nos.length - 1) {
+        const nextBox = document.getElementById(`node-${i+1}`);
+        if (nextBox) {
+          nextBox.classList.remove('locked');
+          nextBox.querySelector('.ch-node-click').textContent = '↓ CLIQUE';
+        }
+        state.v4Step++;
+      } else {
+        // último nó clicado → após delay, mostra reveal
+        setTimeout(() => showReveal(v.id,
+          'PERCURSO COMPLETO · 8.743 KM · 89ms · MILHÕES DE LITROS',
+          'Você acaba de transmitir seus dados por 3 jurisdições diferentes. Eles foram compartilhados com 14 parceiros sem que você saiba seus nomes. A LGPD garante seus direitos em território brasileiro — e nenhum servidor neste percurso está em território brasileiro. Cada operação consumiu, ainda, mililitros de água potável de comunidades que nunca verão um real do contrato.',
+          null), REVEAL_DELAY.rota);
+        state.v4Step++;
+      }
+    });
+    nodeEl.appendChild(box);
+    if (i < ch.nos.length - 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'ch-node-arrow';
+      nodeEl.appendChild(arrow);
+    }
+    nodesWrap.appendChild(nodeEl);
+  });
+
+  body.appendChild(nodesWrap);
+  const factBox = document.createElement('div');
+  factBox.className = 'ch-node-fact';
+  factBox.id = 'ch-node-fact';
+  factBox.innerHTML = '<strong>· · ·</strong>Clique no primeiro nó para iniciar a transmissão.';
+  body.appendChild(factBox);
+}
+
+function showNodeFact(i, no, color) {
+  const box = document.getElementById(`node-${i}`);
+  if (box) { box.classList.add('active'); box.style.backgroundColor = PALETA.ink; }
+  const factEl = document.getElementById('ch-node-fact');
+  if (factEl) {
+    factEl.innerHTML = `<strong>${no.label || ''}</strong>${no.fact}`;
+    factEl.style.borderLeftColor = color;
+  }
+}
+
+// V5 — Relatório
+function renderRelatorio(body, v, ch, color) {
+  const grid = document.createElement('div');
+  grid.className = 'ch-metrics';
+  const genBtn = document.createElement('button');
+  genBtn.className = 'modal-nav-btn';
+  genBtn.textContent = 'GERAR RELATÓRIO';
+  genBtn.disabled = true;
+  genBtn.style.opacity = '.4';
+
+  ch.metricas.forEach(m => {
+    const opt = document.createElement('div');
+    opt.className = 'ch-metric-opt';
+    opt.innerHTML = `<div class="ch-metric-cb"></div><div class="ch-metric-label">${m.label}</div>`;
+    opt.addEventListener('click', () => {
+      if (state.v5Selected.has(m.id)) {
+        state.v5Selected.delete(m.id);
+        opt.classList.remove('selected');
+      } else if (state.v5Selected.size < 3) {
+        state.v5Selected.add(m.id);
+        opt.classList.add('selected');
+      }
+      const ok = state.v5Selected.size === 3;
+      genBtn.disabled = !ok;
+      genBtn.style.opacity = ok ? '1' : '.4';
+    });
+    grid.appendChild(opt);
+  });
+
+  body.appendChild(grid);
+
+  const result = document.createElement('div');
+  result.className = 'ch-report-result';
+  result.id = 'ch-report-result';
+  result.innerHTML = `<div class="ch-report-num">-23%</div><div class="ch-report-label">REDUÇÃO DE CRIMINALIDADE · SEMESTRE</div><div class="ch-report-note">* medido como variação no número de abordagens policiais, não crimes registrados</div>`;
+  body.appendChild(result);
+
+  genBtn.addEventListener('click', () => {
+    result.classList.add('show');
+    showToast('CONTRATO RENOVADO · +24 MESES · R$ 665M', 3500);
+    setTimeout(() => {
+      showReveal(v.id,
+        'RELATÓRIO APROVADO · CONTRATO RENOVADO',
+        'Qualquer combinação de 3 métricas produz o mesmo número: 23% de redução. Isso ocorre porque "redução" é medida como variação no número de abordagens policiais — geradas pelo próprio sistema — não como variação em crimes. A consultoria que vendeu o sistema é a que auditou os resultados. O secretário aplaudiu. O contrato foi renovado por mais R$665 milhões.',
+        null);
+    }, REVEAL_DELAY.relatorio);
+  });
+
+  const navWrap = document.createElement('div');
+  navWrap.className = 'modal-nav';
+  navWrap.appendChild(genBtn);
+  document.getElementById('phase-challenge').appendChild(navWrap);
+}
+
+// V6 — Mapa redlining
+function renderMapaRedlining(body, v, ch, color) {
+  const layers = document.createElement('div');
+  layers.className = 'ch-map-layers';
+
+  const btnT = makeLayerBtn('VER AVALIAÇÕES DE TURISTAS', color, () => {
+    state.v6Layers.tourists = !state.v6Layers.tourists;
+    btnT.classList.toggle('active', state.v6Layers.tourists);
+    updateMapCells();
+  });
+  const btnA = makeLayerBtn('VER ALERTAS DO SISTEMA', color, () => {
+    state.v6Layers.alerts = !state.v6Layers.alerts;
+    btnA.classList.toggle('active', state.v6Layers.alerts);
+    updateMapCells();
+    if (state.v6Layers.alerts && state.v6Layers.tourists) {
+      setTimeout(() => {
+        const btnD = document.getElementById('layer-demo-btn');
+        if (btnD) btnD.style.display = 'flex';
+      }, 600);
+    }
+  });
+  const btnD = makeLayerBtn('VER DADOS DEMOGRÁFICOS', color, () => {
+    state.v6Layers.demo = !state.v6Layers.demo;
+    btnD.classList.toggle('active', state.v6Layers.demo);
+    updateMapCells();
+    if (state.v6Layers.demo) {
+      // Banner de análise: dá tempo do usuário comparar % nas células vermelhas vs verdes
+      const challengeBody = document.getElementById('challenge-body');
+      const banner = document.createElement('div');
+      banner.id = 'v6-analysis-banner';
+      banner.style.cssText = `
+        margin-top:14px;padding:10px 14px;
+        background:${PALETA.ink};color:${PALETA.bone};
+        font-family:'Archivo Black',sans-serif;font-size:10px;letter-spacing:2px;
+        text-align:center;animation:fichaIn .25s ease;
+        border-left:3px solid ${PALETA.brick};
+      `;
+      banner.innerHTML = `▶ COMPARANDO % NAS ZONAS VERMELHAS vs VERDES <span id="v6-dots">...</span>`;
+      challengeBody.appendChild(banner);
+      // animação dos pontinhos
+      let dots = 0;
+      const dotsInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        const el = document.getElementById('v6-dots');
+        if (el) el.textContent = '.'.repeat(dots) || '.';
+      }, 450);
+      setTimeout(() => {
+        clearInterval(dotsInterval);
+        showReveal(v.id,
+          'CORRELAÇÃO: 97,3% · ALGORITMO "NEUTRO"',
+          'As zonas marcadas como "evitar" pelo algoritmo coincidem em 97,3% com as áreas de maior concentração de população negra da cidade. Compare: nas células verdes (turistas adoram), a população negra varia de 15% a 31%. Nas células vermelhas (sistema alerta), os percentuais saltam para 76% a 91%. O algoritmo não foi programado para discriminar. Ele aprendeu com 2,8 milhões de avaliações de turistas. Os turistas aprenderam com séculos de segregação espacial. O algoritmo é, segundo a fabricante, completamente neutro.',
+          null);
+      }, REVEAL_DELAY.mapa);
+    }
+  });
+  btnD.id = 'layer-demo-btn';
+  btnD.style.display = 'none';
+  layers.appendChild(btnT); layers.appendChild(btnA); layers.appendChild(btnD);
+  body.appendChild(layers);
+
+  const mapCells = document.createElement('div');
+  mapCells.className = 'ch-map-grid';
+  mapCells.id = 'ch-map-grid';
+  const zones = ['N','N','G','G','G','N','N','N','G','G','R','R','N','N','G','R','R','R','N','N','R','R','R','R','N'];
+  const demoPcts = ['31','28','74','22','18','35','41','62','25','15','78','81','45','30','20','82','79','76','38','27','85','88','91','84','42'];
+  zones.forEach((z, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'ch-map-cell';
+    cell.dataset.zone = z;
+    cell.dataset.demo = demoPcts[i];
+    cell.innerHTML = `<div class="cell-pct">${demoPcts[i]}%</div>`;
+    mapCells.appendChild(cell);
+  });
+  body.appendChild(mapCells);
+
+  const legend = document.createElement('div');
+  legend.className = 'ch-map-legend';
+  legend.textContent = 'Mapa simplificado · Cada célula = setor urbano · % = população negra';
+  body.appendChild(legend);
+}
+
+function makeLayerBtn(label, color, fn) {
+  const btn = document.createElement('button');
+  btn.className = 'ch-layer-btn';
+  btn.textContent = label;
+  btn.addEventListener('click', () => { fn(); });
+  return btn;
+}
+
+function updateMapCells() {
+  const cells = document.querySelectorAll('.ch-map-cell');
+  cells.forEach(cell => {
+    cell.className = 'ch-map-cell';
+    const z = cell.dataset.zone;
+    if (state.v6Layers.tourists && z === 'G') cell.classList.add('green');
+    if (state.v6Layers.alerts && z === 'R') cell.classList.add(state.v6Layers.demo ? 'red-strong' : 'red');
+    if (state.v6Layers.demo) cell.classList.add('show-pct');
+  });
+}
+
+// ════════════════════════════════════════
+// Resultado breve (entre desafio e reveal)
+// ════════════════════════════════════════
+function showResultadoBreve(msg, color, delay, callback) {
+  const body = document.getElementById('challenge-body');
+  // Cria um overlay sobre o conteúdo do desafio
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    margin-top:14px;padding:12px 16px;
+    background:${color};color:${PALETA.bone};
+    font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:2px;
+    text-align:center;animation:fichaIn .25s ease;
+  `;
+  overlay.textContent = msg;
+  body.appendChild(overlay);
+  setTimeout(callback, delay);
+}
+
+// ════════════════════════════════════════
+// REVEAL
+// ════════════════════════════════════════
+function showReveal(id, titulo, texto, toast) {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  const v = VINHETAS.find(x => x.id === id);
+  const color = PALETA[v.cor];
+  const body = document.getElementById('reveal-body');
+  body.innerHTML = `
+    <div class="reveal-stamp">CONSEQUÊNCIA REGISTRADA</div>
+    <div class="reveal-titulo" style="color:${color}">${titulo}</div>
+    <div class="reveal-texto">${texto}</div>
+    <div class="reveal-ficha">
+      <div class="reveal-ficha-label">FICHA ${state.fichas.length + 1} · SERÁ ADICIONADA À CADERNETA</div>
+      <div class="reveal-ficha-quote">${v.ficha.texto}</div>
+      <div class="reveal-ficha-fonte">${v.ficha.fonte}</div>
+    </div>`;
+  setModalPhase('reveal');
+  if (toast) setTimeout(() => showToast(toast), 800);
+}
+
+// ════════════════════════════════════════
+// CADERNETA
+// ════════════════════════════════════════
+function addFicha(v) {
+  if (state.fichas.find(f => f.id === v.id)) return;
+  state.fichas.push({id: v.id, ficha: v.ficha, titulo: v.titulo});
+  const empty = document.getElementById('caderneta-empty');
+  if (empty) empty.remove();
+  const content = document.getElementById('caderneta-content');
+  const card = document.createElement('div');
+  card.className = 'ficha-card';
+  card.innerHTML = `
+    <div class="ficha-num">FICHA ${state.fichas.length} · VINHETA ${v.id}</div>
+    <div class="ficha-quote">${v.ficha.texto}</div>
+    <div class="ficha-fonte">${v.ficha.fonte}</div>`;
+  content.appendChild(card);
+  const badge = document.getElementById('caderneta-badge');
+  badge.textContent = state.fichas.length;
+  badge.classList.add('show');
+}
+
+function toggleCaderneta() {
+  // fecha timeline se aberta
+  document.getElementById('timeline-panel').classList.remove('open');
+  document.getElementById('caderneta-panel').classList.toggle('open');
+}
+
+function toggleTimeline() {
+  // fecha caderneta se aberta
+  document.getElementById('caderneta-panel').classList.remove('open');
+  document.getElementById('timeline-panel').classList.toggle('open');
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function showToast(msg, duration = 3500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ════════════════════════════════════════
+// EVENTS
+// ════════════════════════════════════════
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('modal-close').addEventListener('click', closeModal);
+
+// ════════════════════════════════════════
+// WINDOW ROWS
+// ════════════════════════════════════════
+function addWindowRows() {
+  const svg = document.getElementById('city-svg');
+  const ns = 'http://www.w3.org/2000/svg';
+  const layer = svg.querySelector('#janelas-ops');
+  for (let row = 1; row < 11; row++) {
+    for (let col = 0; col < 5; col++) {
+      const r = document.createElementNS(ns,'rect');
+      r.setAttribute('x', 548 + col*14); r.setAttribute('y', 130 + row*22);
+      r.setAttribute('width','9'); r.setAttribute('height','14');
+      r.setAttribute('fill', PALETA.bone);
+      r.setAttribute('stroke', PALETA.ink); r.setAttribute('stroke-width','.3');
+      r.setAttribute('opacity','.85');
+      layer.appendChild(r);
+    }
+  }
+}
+
+</script>
+
+</body>
+</html>
