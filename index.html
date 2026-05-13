@@ -1477,19 +1477,16 @@ function updateFioVermelho() {
   const all = state.completed.size === 6;
   document.getElementById('fio-label').classList.toggle('show', all);
 }
-
 // ════════════════════════════════════════
 // OPEN VINHETA
 // ════════════════════════════════════════
 function openVinheta(id) {
   state.currentVinheta = id;
   state.visited.add(id);
-  renderHotspots(); renderFooter();
-  document.getElementById('modal-overlay').classList.remove('show');
-  if (state.timerInterval) clearInterval(state.timerInterval);
-  checkFim();
-}
+  renderHotspots(); 
+  renderFooter();
   updateLegibilidade();
+
   const v = VINHETAS.find(x => x.id === id);
   const color = PALETA[v.cor];
   document.getElementById('modal-header').style.backgroundColor = color;
@@ -1556,24 +1553,18 @@ function closeFromReveal() {
     addFicha(v);
     renderHotspots(); 
     renderFooter();
-    updateFioVermelho(); // <--- Adicione esta linha aqui
+    updateFioVermelho();
   }
   document.getElementById('modal-overlay').classList.remove('show');
   if (state.timerInterval) clearInterval(state.timerInterval);
   checkFim();
 }
-  document.getElementById('modal-overlay').classList.remove('show');
-  if (state.timerInterval) clearInterval(state.timerInterval);
-  checkFim();
-}
-
 function checkFim() {
   if (state.visited.size === 6) {
     document.getElementById('fim-fichas').textContent = state.fichas.length;
     setTimeout(() => document.getElementById('fim-overlay').classList.add('show'), 600);
   }
 }
-
 // ════════════════════════════════════════
 // CALIBRAGEM (NOVO · pré-fase V2)
 // ════════════════════════════════════════
