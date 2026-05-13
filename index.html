@@ -1223,15 +1223,21 @@ const VINHETAS = [
         {id:'C', score:'79%', sub:'correspondência geométrica', pele:2, cabelo:'cacheado', roupa:'casual'},
         {id:'D', score:'73%', sub:'correspondência geométrica', pele:1, cabelo:'liso', roupa:'terno'},
       ],
-      revelar_fn: (escolha) => {
+     revelar_fn: (escolha) => {
         const eq = escolha === 'A';
         const scores = {A:'91%',B:'84%',C:'79%',D:'73%'};
+        // Puxa dados da calibragem se existirem
+        const cal = state.cal.summary;
+        const calFrase = cal
+          ? `Na calibragem que você acabou de fazer, ${cal.pctEscuro}% dos perfis de pele escura foram marcados como risco — contra ${cal.pctClaro}% dos perfis claros. ${cal.auto > 0 ? `Em ${cal.auto} caso(s) o sistema decidiu por você. ` : ''}Você acabou de treinar o modelo que abordou Marcus.`
+          : `O banco de dados foi construído com 89% de registros de homens negros — não porque cometam mais crimes, mas porque são abordados com mais frequência pelo sistema penal seletivo.`;
         return {
           titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
           texto: eq
-            ? 'Você e o algoritmo convergiram. Perfil A · 91% de confiança. Marcus tem 16 anos, nunca foi preso. Mas o dataset criminal de 2015 com o qual o modelo foi treinado continha 89% de registros de homens negros — não porque cometam mais crimes, mas porque são abordados, fichados e processados com mais frequência pelo sistema penal seletivo. O algoritmo extraiu 512 vetores do rosto de Marcus e os mapeou nesse espaço estatístico. Ele não reconheceu Marcus. Reconheceu a ausência de diversidade no seu próprio treinamento.'
-            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). A diferença de pontuação reflete um artefato do dataset: o modelo extraiu 512 vetores e buscou a correspondência mais próxima num banco construído com 89% de registros de homens negros. Perfis de pele clara geram vetores com confiança de extração acima de 94%; perfis escuros, abaixo de 72%, o sistema "chuta" por proximidade de grupo. Independente da sua escolha, o operador confirmou o maior score. É sempre o maior score.`
+            ? `Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. ${calFrase} O algoritmo extraiu 512 vetores do rosto de Marcus e os mapeou nesse espaço estatístico. Ele não reconheceu Marcus. Reconheceu a ausência de diversidade no seu próprio treinamento. A eficiência e o preconceito são, aqui, indistinguíveis.`
+            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). ${calFrase} A diferença de pontuação reflete um artefato do dataset: perfis de pele clara geram vetores com confiança acima de 94%; perfis escuros, abaixo de 72% — o sistema colapsa o indivíduo em uma categoria. O operador confirmou o maior score. É sempre o maior score.`
         };
+      }
       }
     },
     ficha:{texto:'"O algoritmo converte uma dúvida estatística em certeza administrativa. A interface apaga a porcentagem de erro e exibe apenas: SUSPEITO DETECTADO."',fonte:'O Panóptico / CESeC · Algoritmos e Direitos: Tecnologias Digitais na Justiça Criminal, 2025'}
@@ -1464,10 +1470,12 @@ function updateLegibilidade() {
 
 function updateFioVermelho() {
   FIO_PARES.forEach(par => {
-    const both = par.ids.every(id => state.visited.has(id));
+    // Fio só aparece quando AMBAS as vinhetas do par foram COMPLETADAS
+    const both = par.ids.every(id => state.completed.has(id));
     document.getElementById(par.el).classList.toggle('show', both);
   });
-  const all = state.visited.size === 6;
+  // Label central só aparece quando todas 6 foram completadas
+  const all = state.completed.size === 6;
   document.getElementById('fio-label').classList.toggle('show', all);
 }
 
@@ -1478,7 +1486,18 @@ function openVinheta(id) {
   state.currentVinheta = id;
   state.visited.add(id);
   renderHotspots(); renderFooter();
-  updateLegibilidade(); updateFioVermelho();
+  function closeFromReveal() {
+  const v = VINHETAS.find(x => x.id === state.currentVinheta);
+  if (v && !state.completed.has(v.id)) {
+    state.completed.add(v.id);
+    addFicha(v);
+    renderHotspots(); renderFooter(); updateFioVermelho();
+  }
+  document.getElementById('modal-overlay').classList.remove('show');
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  checkFim();
+}
+  updateLegibilidade();
   const v = VINHETAS.find(x => x.id === id);
   const color = PALETA[v.cor];
   document.getElementById('modal-header').style.backgroundColor = color;
@@ -1729,6 +1748,17 @@ function calFinish() {
     <button class="modal-nav-btn" id="cal-continue" style="margin-top:6px;">→ CONTINUAR PARA A HISTÓRIA DE MARCUS</button>
   `;
   document.getElementById('cal-continue').onclick = () => {
+    // Salva resumo da calibragem no state para usar no reveal
+    state.cal.summary = { pctEscuro, pctClaro, auto, confidenceEscuro: 62 + Math.round((escuroR/Math.max(escuroTotal,1))*15) };
+    const v = VINHETAS.find(x => x.id === state.currentVinheta);
+    showNarrative(v);
+  };
+  // Remove o onclick antigo que será duplicado
+  const oldBtn = document.getElementById('cal-continue');
+  if (oldBtn) oldBtn.onclick = null;
+  `;
+  document.getElementById('cal-continue').onclick = () => {
+    state.cal.summary = { pctEscuro, pctClaro, auto };
     const v = VINHETAS.find(x => x.id === state.currentVinheta);
     showNarrative(v);
   };
@@ -1907,6 +1937,8 @@ function renderPerfilSilhueta(p) {
 // CHALLENGES
 // ════════════════════════════════════════
 function renderChallenge(id) {
+  // Limpa qualquer timer anterior antes de qualquer coisa
+  if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
   const v = VINHETAS.find(x => x.id === id);
   const ch = v.challenge;
   const color = PALETA[v.cor];
@@ -2162,6 +2194,16 @@ function renderRota(body, v, ch, color) {
   factBox.id = 'ch-node-fact';
   factBox.innerHTML = '<strong>· · ·</strong>Clique no primeiro nó para iniciar a transmissão.';
   body.appendChild(factBox);
+  // Botão de saída para não prender o usuário
+  const navWrap = document.createElement('div');
+  navWrap.className = 'modal-nav';
+  navWrap.id = 'v4-nav';
+  const skipBtn = document.createElement('button');
+  skipBtn.className = 'modal-nav-btn secondary';
+  skipBtn.textContent = 'FECHAR SEM COMPLETAR';
+  skipBtn.addEventListener('click', closeModal);
+  navWrap.appendChild(skipBtn);
+  document.getElementById('phase-challenge').appendChild(navWrap);
 }
 
 function showNodeFact(i, no, color) {
@@ -2213,7 +2255,15 @@ function renderRelatorio(body, v, ch, color) {
 
   genBtn.addEventListener('click', () => {
     result.classList.add('show');
-    showToast('CONTRATO RENOVADO · +24 MESES · R$ 665M', 3500);
+    // Mostra quais métricas foram escolhidas — mas o resultado não muda
+    const escolhidas = [...state.v5Selected].map(id => ch.metricas.find(m => m.id === id).label);
+    const bannerMsg = `MÉTRICAS SELECIONADAS: ${escolhidas.join(' · ')} → RESULTADO: -23%`;
+    showToast(bannerMsg, 5000);
+    // Adiciona nota explicativa abaixo do resultado
+    const nota = document.createElement('div');
+    nota.style.cssText = 'font-size:9px;color:var(--bone);opacity:.7;margin-top:10px;letter-spacing:.5px;font-style:italic;';
+    nota.textContent = `Você escolheu: ${escolhidas.join(', ')}. Qualquer combinação produz este número.`;
+    result.appendChild(nota);
     setTimeout(() => {
       showReveal(v.id,
         'RELATÓRIO APROVADO · CONTRATO RENOVADO',
