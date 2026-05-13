@@ -1230,7 +1230,7 @@ const VINHETAS = [
           titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
           texto: eq
             ? 'Você e o algoritmo convergiram. Perfil A · 91% de confiança. Marcus tem 16 anos, nunca foi preso. Mas o dataset criminal de 2015 com o qual o modelo foi treinado continha 89% de registros de homens negros — não porque cometam mais crimes, mas porque são abordados, fichados e processados com mais frequência pelo sistema penal seletivo. O algoritmo extraiu 512 vetores do rosto de Marcus e os mapeou nesse espaço estatístico. Ele não reconheceu Marcus. Reconheceu a ausência de diversidade no seu próprio treinamento.'
-            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). A diferença de pontuação reflete um artefato do dataset: o modelo extraiu 512 vetores e buscou a correspondência mais próxima num banco construído com 89% de registros de homens negros. Perfis de pele clara geram vetores com confiança de extração acima de 94%; perfis escuros, abaixo de 72% — o sistema "chuta" por proximidade de grupo. Independente da sua escolha, o operador confirmou o maior score. É sempre o maior score.`
+            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). A diferença de pontuação reflete um artefato do dataset: o modelo extraiu 512 vetores e buscou a correspondência mais próxima num banco construído com 89% de registros de homens negros. Perfis de pele clara geram vetores com confiança de extração acima de 94%; perfis escuros, abaixo de 72%, o sistema "chuta" por proximidade de grupo. Independente da sua escolha, o operador confirmou o maior score. É sempre o maior score.`
         };
       }
     },
@@ -2292,7 +2292,7 @@ function renderMapaRedlining(body, v, ch, color) {
   mapCells.className = 'ch-map-grid';
   mapCells.id = 'ch-map-grid';
   const zones = ['N','N','G','G','G','N','N','N','G','G','R','R','N','N','G','R','R','R','N','N','R','R','R','R','N'];
-  const demoPcts = ['31','28','74','22','18','35','41','62','25','15','78','81','45','30','20','82','79','76','38','27','85','88','91','84','42'];
+  const demoPcts = ['18','22','16','12','19','25','28','21','14','17','79','83','31','24','15','87','81','84','29','20','91','88','85','86','27'];
   zones.forEach((z, i) => {
     const cell = document.createElement('div');
     cell.className = 'ch-map-cell';
