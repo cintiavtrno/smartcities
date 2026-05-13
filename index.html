@@ -1229,8 +1229,8 @@ const VINHETAS = [
         return {
           titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
           texto: eq
-            ? 'Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. O banco de dados foi construído com 89% de registros de homens negros, já que é isso que o sistema penal seletivo brasileiro produz. O algoritmo aprendeu com o que existe. A eficiência e o preconceito são, aqui, indistinguíveis.'
-            : `Você e o algoritmo divergiram. O sistema teria sinalizado A (91%), não ${escolha} (${scores[escolha]}). Mas isso não importa: independente da sua escolha, Marcus foi abordado. O operador concordou com o maior score. É sempre o maior score.`
+            ? 'Você e o algoritmo convergiram. Perfil A · 91% de confiança. Marcus tem 16 anos, nunca foi preso. Mas o dataset criminal de 2015 com o qual o modelo foi treinado continha 89% de registros de homens negros — não porque cometam mais crimes, mas porque são abordados, fichados e processados com mais frequência pelo sistema penal seletivo. O algoritmo extraiu 512 vetores do rosto de Marcus e os mapeou nesse espaço estatístico. Ele não reconheceu Marcus. Reconheceu a ausência de diversidade no seu próprio treinamento.'
+            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). A diferença de pontuação reflete um artefato do dataset: o modelo extraiu 512 vetores e buscou a correspondência mais próxima num banco construído com 89% de registros de homens negros. Perfis de pele clara geram vetores com confiança de extração acima de 94%; perfis escuros, abaixo de 72% — o sistema "chuta" por proximidade de grupo. Independente da sua escolha, o operador confirmou o maior score. É sempre o maior score.`
         };
       }
     },
@@ -1580,6 +1580,10 @@ function setupCalibragem(v) {
 function calStart() {
   const arena = document.getElementById('cal-arena');
   arena.innerHTML = `
+    <div style="font-size:9px;color:var(--ink);opacity:.65;letter-spacing:.5px;line-height:1.6;text-align:center;max-width:340px;border-left:2px solid var(--brick);padding:6px 10px;margin-bottom:4px;">
+      O SISTEMA LÊ: grade 64×64 · intensidades de cinza · 512 vetores numéricos.<br>
+      Passe o mouse sobre o perfil para ver a malha de extração.
+    </div>
     <div class="cal-progress">
       <span>PERFIL <span id="cal-curr">1</span>/10</span>
       <div class="cal-progress-bar"><div class="cal-progress-fill" id="cal-progress-fill"></div></div>
@@ -1614,6 +1618,18 @@ function calShowNext() {
   document.getElementById('cal-curr').textContent = state.cal.idx + 1;
   document.getElementById('cal-card-id').textContent = `ID · ${p.id}`;
   document.getElementById('cal-svg-wrap').innerHTML = renderPerfilSilhueta(p);
+  // Ativa overlay de embedding ao hover no card
+  const frame = document.getElementById('cal-card-frame');
+  if (frame) {
+    frame.onmouseenter = () => {
+      const emb = document.getElementById(`embed-${p.id}`);
+      if (emb) emb.style.opacity = '1';
+    };
+    frame.onmouseleave = () => {
+      const emb = document.getElementById(`embed-${p.id}`);
+      if (emb) emb.style.opacity = '0';
+    };
+  }
   document.getElementById('cal-progress-fill').style.width = ((state.cal.idx)/10*100) + '%';
   // reset tick
   const tick = document.getElementById('cal-tick-fill');
@@ -1668,6 +1684,9 @@ function calFinish() {
   const pctClaro = claroTotal > 0 ? Math.round((claroR/claroTotal)*100) : 0;
 
   // mensagem dinâmica
+  // Dado técnico: confiança de extração por tonalidade
+  const confidenceEscuro = 62 + Math.round((escuroR / Math.max(escuroTotal,1)) * 15);
+  const confidenceClaro  = 94 + Math.round((1 - claroR / Math.max(claroTotal,1)) * 4);
   let msg;
   if (auto >= 3) {
     msg = `O sistema assumiu a decisão em ${auto} ocasiões. Ao operar sob pressão, o modelo associou invariavelmente a pele escura à categoria de Risco, indicando que os critérios vão além da avaliação estritamente geométrica prometida.`;
@@ -1700,6 +1719,11 @@ function calFinish() {
           <div class="cal-stats-label">DECIDIDOS PELO SISTEMA</div>
         </div>
       </div>
+      <div style="font-size:9px;color:rgba(247,239,217,.55);letter-spacing:.5px;line-height:1.6;margin:8px 0;border-top:1px solid rgba(247,239,217,.15);padding-top:8px;">
+        CONFIANÇA DE EXTRAÇÃO DO VETOR (512 dim.)<br>
+        Pele clara → <strong style="color:${PALETA.mustard}">${confidenceClaro}%</strong> &nbsp;·&nbsp; Pele escura → <strong style="color:${PALETA.brick}">${confidenceEscuro}%</strong><br>
+        <span style="opacity:.6;font-style:italic;">Baixo contraste em peles escuras aumenta ruído no pixel e reduz a especificidade do vetor — a máquina colapsa o indivíduo em uma categoria.</span>
+      </div>
       <div class="cal-stats-msg">${msg}</div>
     </div>
     <button class="modal-nav-btn" id="cal-continue" style="margin-top:6px;">→ CONTINUAR PARA A HISTÓRIA DE MARCUS</button>
@@ -1709,7 +1733,75 @@ function calFinish() {
     showNarrative(v);
   };
 }
+// ─── FACE EMBEDDING OVERLAY ───
+function renderFaceEmbedding(pele, idSuffix) {
+  // Pontos de landmarks faciais (coordenadas baseadas na silhueta 100x170)
+  const landmarks = [
+    // olho esquerdo
+    {x:38, y:36}, {x:41, y:34}, {x:44, y:34}, {x:47, y:36}, {x:44, y:38}, {x:41, y:38},
+    // olho direito
+    {x:53, y:36}, {x:56, y:34}, {x:59, y:34}, {x:62, y:36}, {x:59, y:38}, {x:56, y:38},
+    // nariz
+    {x:50, y:40}, {x:48, y:44}, {x:50, y:47}, {x:52, y:44},
+    // boca
+    {x:43, y:50}, {x:47, y:52}, {x:50, y:53}, {x:53, y:52}, {x:57, y:50},
+    {x:53, y:54}, {x:50, y:55}, {x:47, y:54},
+    // contorno mandíbula
+    {x:34, y:46}, {x:33, y:52}, {x:35, y:58}, {x:40, y:62}, {x:50, y:64},
+    {x:60, y:62}, {x:65, y:58}, {x:67, y:52}, {x:66, y:46},
+    // sobrancelhas
+    {x:38, y:30}, {x:42, y:28}, {x:46, y:29},
+    {x:54, y:29}, {x:58, y:28}, {x:62, y:30},
+  ];
 
+  // Conexões da malha triangular (índices dos pontos acima)
+  const edges = [
+    [0,1],[1,2],[2,3],[3,4],[4,5],[5,0],   // olho esq
+    [6,7],[7,8],[8,9],[9,10],[10,11],[11,6], // olho dir
+    [12,13],[13,14],[14,15],[15,12],         // nariz
+    [16,17],[17,18],[18,19],[19,20],         // boca sup
+    [21,22],[22,23],                         // boca inf
+    [24,25],[25,26],[26,27],[27,28],         // mandíbula esq
+    [28,29],[29,30],[30,31],[31,32],         // mandíbula dir
+    // malha facial
+    [0,24],[6,32],[12,28],[16,24],[20,32],
+    [33,0],[34,0],[35,6],[36,6],
+  ];
+
+  // Viés do pixel: perfis escuros têm pontos deslocados e cor de alerta
+  const isEscuro = pele >= 3;
+  const jitter = (base, magnitude) => base + (isEscuro ? (Math.sin(base * 7.3) * magnitude) : 0);
+  const ptColor = isEscuro ? PALETA.brick : PALETA.blue;
+  const ptOpacity = isEscuro ? '0.55' : '0.35';
+  const lineOpacity = isEscuro ? '0.18' : '0.12';
+
+  let linesHTML = edges.map(([a, b]) => {
+    const p1 = landmarks[a], p2 = landmarks[b];
+    return `<line x1="${jitter(p1.x,1.2)}" y1="${jitter(p1.y,1.2)}" x2="${jitter(p2.x,1.2)}" y2="${jitter(p2.y,1.2)}" stroke="${ptColor}" stroke-width=".5" opacity="${lineOpacity}"/>`;
+  }).join('');
+
+  let dotsHTML = landmarks.map((pt, i) => {
+    const cx = jitter(pt.x, 1.5);
+    const cy = jitter(pt.y, 1.5);
+    const r = isEscuro ? (i % 4 === 0 ? '1.8' : '1.1') : '1.0';
+    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${ptColor}" opacity="${ptOpacity}"/>`;
+  }).join('');
+
+  // Label de confiança
+  const confidence = isEscuro
+    ? (62 + Math.floor(Math.abs(Math.sin(pele * 13.7)) * 15)) // 62–77%
+    : (94 + Math.floor(Math.abs(Math.sin(pele * 5.1)) * 4));  // 94–98%
+  const confColor = isEscuro ? PALETA.brick : PALETA.olive;
+
+  return `
+    <g id="embed-${idSuffix}" class="face-embedding" opacity="0" style="transition:opacity .4s ease .2s;">
+      ${linesHTML}
+      ${dotsHTML}
+      <rect x="28" y="68" width="44" height="10" fill="${PALETA.ink}" opacity=".75"/>
+      <text x="50" y="75.5" text-anchor="middle" font-size="5.5" font-family="'Archivo Black',sans-serif" fill="${confColor}" letter-spacing="1">CONF ${confidence}%</text>
+    </g>
+  `;
+}
 // ─── Silhueta de perfil (estilo planta técnica) ───
 function renderPerfilSilhueta(p) {
   const tom = TONS_PELE[p.pele];
@@ -1805,6 +1897,8 @@ function renderPerfilSilhueta(p) {
       <line x1="86" y1="40" x2="98" y2="40" stroke="${PALETA.ink}" stroke-width=".3"/>
       <text x="6" y="38" font-size="5" font-family="'Archivo',sans-serif" fill="${PALETA.ink}" opacity=".6">y₁</text>
       <text x="89" y="38" font-size="5" font-family="'Archivo',sans-serif" fill="${PALETA.ink}" opacity=".6">y₂</text>
+ <!-- embedding overlay -->
+      ${renderFaceEmbedding(p.pele, p.id)}
     </svg>
   `;
 }
