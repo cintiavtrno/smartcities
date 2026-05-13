@@ -1238,7 +1238,6 @@ const VINHETAS = [
             : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). ${calFrase} A diferença de pontuação reflete um artefato do dataset: perfis de pele clara geram vetores com confiança acima de 94%; perfis escuros, abaixo de 72% — o sistema colapsa o indivíduo em uma categoria. O operador confirmou o maior score. É sempre o maior score.`
         };
       }
-      }
     },
     ficha:{texto:'"O algoritmo converte uma dúvida estatística em certeza administrativa. A interface apaga a porcentagem de erro e exibe apenas: SUSPEITO DETECTADO."',fonte:'O Panóptico / CESeC · Algoritmos e Direitos: Tecnologias Digitais na Justiça Criminal, 2025'}
   },
@@ -1486,13 +1485,6 @@ function openVinheta(id) {
   state.currentVinheta = id;
   state.visited.add(id);
   renderHotspots(); renderFooter();
-  function closeFromReveal() {
-  const v = VINHETAS.find(x => x.id === state.currentVinheta);
-  if (v && !state.completed.has(v.id)) {
-    state.completed.add(v.id);
-    addFicha(v);
-    renderHotspots(); renderFooter(); updateFioVermelho();
-  }
   document.getElementById('modal-overlay').classList.remove('show');
   if (state.timerInterval) clearInterval(state.timerInterval);
   checkFim();
@@ -1562,8 +1554,14 @@ function closeFromReveal() {
   if (v && !state.completed.has(v.id)) {
     state.completed.add(v.id);
     addFicha(v);
-    renderHotspots(); renderFooter();
+    renderHotspots(); 
+    renderFooter();
+    updateFioVermelho(); // <--- Adicione esta linha aqui
   }
+  document.getElementById('modal-overlay').classList.remove('show');
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  checkFim();
+}
   document.getElementById('modal-overlay').classList.remove('show');
   if (state.timerInterval) clearInterval(state.timerInterval);
   checkFim();
@@ -1750,15 +1748,6 @@ function calFinish() {
   document.getElementById('cal-continue').onclick = () => {
     // Salva resumo da calibragem no state para usar no reveal
     state.cal.summary = { pctEscuro, pctClaro, auto, confidenceEscuro: 62 + Math.round((escuroR/Math.max(escuroTotal,1))*15) };
-    const v = VINHETAS.find(x => x.id === state.currentVinheta);
-    showNarrative(v);
-  };
-  // Remove o onclick antigo que será duplicado
-  const oldBtn = document.getElementById('cal-continue');
-  if (oldBtn) oldBtn.onclick = null;
-  `;
-  document.getElementById('cal-continue').onclick = () => {
-    state.cal.summary = { pctEscuro, pctClaro, auto };
     const v = VINHETAS.find(x => x.id === state.currentVinheta);
     showNarrative(v);
   };
