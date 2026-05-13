@@ -1181,7 +1181,7 @@ const VINHETAS = [
     id:1, titulo:'CENTRO DE OPERAÇÕES INTELIGENTES', subtitulo:'4ª madrugada · turno B',
     cor:'blue', cena:'Dona Lúcia entra às 3h47.',
     paragrafos:[
-      'Os monitores estão sempre ligados. As máquinas estão sempre quentes — Lúcia aprendeu, no primeiro dia, a não encostar muito tempo na lateral dos servidores. Ela limpa o pó que ninguém vê e os vidros que ninguém olha.',
+      'Os monitores estão sempre ligados. As máquinas estão sempre quentes. Lúcia aprendeu, no primeiro dia, a não encostar muito tempo na lateral dos servidores. Ela limpa o pó que ninguém vê e os vidros que ninguém olha.',
       'O sistema processa, em tempo real, 1.247.000 imagens por minuto. Lúcia processa, em tempo real, 14 banheiros, 6 corredores, 2 cozinhas e o saguão.',
       'Quando o turno acaba, ela pega o ônibus de volta. O ônibus passa por debaixo do prédio. O prédio sabe que ela passou.',
     ],
@@ -1195,7 +1195,7 @@ const VINHETAS = [
         {id:'c', label:'ATIVAR ANÁLISE COMPORTAMENTAL', sub:'Detectar desvios de padrão de acesso'}
       ],
       revelar:{
-        a:{titulo:'LOG Nº 847 · ARQUIVO ATUALIZADO',texto:'Registro gravado. Lúcia Ferreira não foi notificada. O sistema sabe que ela também passou sob este prédio às 6h22, no ônibus de volta — o mesmo que é filmado pelas câmeras do cruzamento. Nenhuma dessas ações viola a LGPD. O contrato de PPP que instalou este sistema vigora por mais 19 anos.', toast:'PPP VIGENTE · CONTRATO ATIVO POR +19 ANOS'},
+        a:{titulo:'LOG Nº 847 · ARQUIVO ATUALIZADO',texto:'Registro gravado. Lúcia Ferreira não foi notificada. O sistema sabe que ela também passou sob este prédio às 6h22, no ônibus de volta (o mesmo que é filmado pelas câmeras do cruzamento). Nenhuma dessas ações viola a LGPD. O contrato de PPP que instalou este sistema vigora por mais 19 anos.', toast:'PPP VIGENTE · CONTRATO ATIVO POR +19 ANOS'},
         b:{titulo:'COMPARTILHAMENTO PROCESSADO',texto:'Frequência: 94,3%. Produtividade: dentro da média. O dado foi transmitido à gestora de RH sem notificação a Lúcia. O contrato de trabalho autoriza "monitoramento de acesso para fins de segurança operacional". Lúcia não tem acesso a este log. Lúcia não sabe o que foi compartilhado.', toast:null},
         c:{titulo:'ANOMALIA DETECTADA · ARQUIVO ATUALIZADO',texto:'Entrada 12 minutos antes do padrão habitual de terças-feiras. Arquivo de "desvios comportamentais" atualizado: 1 ocorrência. O sistema registrou a anomalia ignorando completamente a circunstância de que o ônibus havia atrasado.', toast:null}
       }
@@ -1229,7 +1229,7 @@ const VINHETAS = [
         return {
           titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
           texto: eq
-            ? 'Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. O banco de dados foi construído com 89% de registros de homens negros — porque é isso que o sistema penal seletivo brasileiro produz. O algoritmo aprendeu com o que existe. A eficiência e o preconceito são, aqui, indistinguíveis.'
+            ? 'Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. O banco de dados foi construído com 89% de registros de homens negros, já que é isso que o sistema penal seletivo brasileiro produz. O algoritmo aprendeu com o que existe. A eficiência e o preconceito são, aqui, indistinguíveis.'
             : `Você e o algoritmo divergiram. O sistema teria sinalizado A (91%), não ${escolha} (${scores[escolha]}). Mas isso não importa: independente da sua escolha, Marcus foi abordado. O operador concordou com o maior score. É sempre o maior score.`
         };
       }
@@ -1272,7 +1272,7 @@ const VINHETAS = [
         {loc:'Salvador, BA', ms:'origem', label:'COLETA', fact:'CPF · rosto biométrico · localização GPS · padrão de consumo · histórico de saúde municipal. Tudo coletado pelo app da prefeitura, sem consentimento granular — apenas um "li e aceito" no primeiro acesso.'},
         {loc:'São Paulo, SP', ms:'12ms', label:'TRÂNSITO', fact:'Data center privado de processamento intermediário. Sua informação foi agregada com dados de outros 2,9 milhões de cidadãos. Aqui, você deixa de ser indivíduo e vira ponto em uma nuvem estatística.'},
         {loc:'Virgínia, EUA', ms:'89ms', label:'PROCESSAMENTO', fact:'AWS us-east-1. Servidor principal. Três jurisdições diferentes percorridas. A LGPD não tem eficácia aqui. A norte-americana CLOUD Act, sim — o governo dos EUA pode requisitar seus dados sem te informar.'},
-        {loc:'Conflito Hídrico', ms:'⚠ alerta', label:'CUSTO INVISÍVEL', fact:'Datacenters da AWS na Virgínia consumem cerca de 2 bilhões de litros de água por ano para resfriamento. Em outras regiões — Aragón na Espanha, Querétaro no México, Chile — protestos de comunidades por estresse hídrico já paralisaram instalações. Cada consulta facial sua, em média, "custa" mililitros. Multiplicado por 2,9 milhões de pessoas, vira reservatório.'},
+        {loc:'Conflito Hídrico', ms:'⚠ alerta', label:'CUSTO INVISÍVEL', fact:'Datacenters da AWS na Virgínia consumem cerca de 2 bilhões de litros de água por ano para resfriamento. Em outras regiões, a exemplo de Aragón na Espanha, Querétaro no México e Chile, protestos de comunidades por estresse hídrico já paralisaram instalações. Cada consulta facial sua, em média, "custa" mililitros. Multiplicado por 2,9 milhões de pessoas, vira reservatório.'},
         {loc:'14 Parceiros', ms:'distribuição', label:'COMPARTILHAMENTO', fact:'Crédito · Seguros · Publicidade digital · Agências governamentais · Saúde privada. A identidade desses parceiros permanece oculta do usuário, visto que os termos de uso autorizam o compartilhamento através de cláusulas de difícil visualização inseridas no parágrafo 47'},
         {loc:'Soberania: 0ms', ms:'conclusão', label:'BALANÇO', fact:'A Lei Geral de Proteção de Dados é uma lei brasileira. Este servidor, não. O cabo submarino, não. A água que resfria os processadores, também não pertence a você. Você é, ao mesmo tempo, matéria-prima (dados) e externalidade (sede).'}
       ]
@@ -1982,7 +1982,7 @@ function renderContrato(body, v, ch, color) {
         countEl.style.marginTop = '14px';
         setTimeout(() => showReveal(v.id,
           'AS 3 CLÁUSULAS · VOCÊ ENCONTROU TODAS',
-          `Dona Edna assinou este documento em 2019. Você levou ${duracao - parseInt(document.getElementById('ch-timer-secs').textContent)} segundos para encontrar o que determina sua vida financeira. Ela não teve esse tempo. Não há mecanismo de revisão previsto. O Art. 12 do contrato classifica os critérios do score como "segredo industrial" — legalmente inacessíveis, mesmo por ordem judicial.`,
+          `Dona Edna assinou este documento em 2019. Você levou ${duracao - parseInt(document.getElementById('ch-timer-secs').textContent)} segundos para encontrar o que determina sua vida financeira. Ela não teve esse tempo. Não há mecanismo de revisão previsto. O Art. 12 do contrato classifica os critérios do score como "segredo industrial", legalmente inacessíveis, mesmo por ordem judicial.`,
           null), REVEAL_DELAY.contrato_done);
       }
     });
@@ -2040,7 +2040,7 @@ function renderRota(body, v, ch, color) {
         // último nó clicado → após delay, mostra reveal
         setTimeout(() => showReveal(v.id,
           'PERCURSO COMPLETO · 8.743 KM · 89ms · MILHÕES DE LITROS',
-          'Você acaba de transmitir seus dados por 3 jurisdições diferentes. Eles foram compartilhados com 14 parceiros sem que você saiba seus nomes. A LGPD garante seus direitos em território brasileiro — e nenhum servidor neste percurso está em território brasileiro. Cada operação consumiu, ainda, mililitros de água potável de comunidades que nunca verão um real do contrato.',
+          'Você acaba de transmitir seus dados por 3 jurisdições diferentes. Eles foram compartilhados com 14 parceiros sem que você saiba seus nomes. A LGPD garante seus direitos em território brasileiro, e nenhum servidor neste percurso está em território brasileiro. Cada operação consumiu, ainda, mililitros de água potável de comunidades que nunca verão um real do contrato.',
           null), REVEAL_DELAY.rota);
         state.v4Step++;
       }
