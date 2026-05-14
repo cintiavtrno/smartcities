@@ -635,6 +635,24 @@ footer{
 .fio-line.show{opacity:.75;}
 .fio-label-g{opacity:0;transition:opacity .8s ease .3s;}
 .fio-label-g.show{opacity:1;}
+/* ─── ANIMAÇÕES DA MALHA DE DADOS (SMART CITY) ─── */
+@keyframes data-stream {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes pulse-sensor {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+.data-flow-line {
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+  animation: data-stream 1.5s linear infinite;
+}
+.sensor-blink {
+  animation: pulse-sensor 3s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
@@ -758,6 +776,45 @@ footer{
         </defs>
         <rect width="1000" height="600" fill="#EFE5CE"/>
         <rect width="1000" height="600" fill="url(#grid-paper)"/>
+        <!-- ════ MALHA DE SENSORES (DENSA NA ÁREA NOBRE, INEXISTENTE NA PERIFERIA) ════ -->
+        <g id="malha-sensores" opacity="0.4">
+          <!-- Conexões da teia (Cidade Alta e Centros de Operação) -->
+          <line x1="580" y1="100" x2="650" y2="120" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="650" y1="120" x2="710" y2="180" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="710" y1="180" x2="850" y2="150" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="580" y1="100" x2="850" y2="80" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="150" y1="100" x2="180" y2="250" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="180" y1="250" x2="90" y2="310" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="710" y1="180" x2="900" y2="300" stroke="#C89339" stroke-width="0.5" stroke-dasharray="2 2"/>
+          
+          <!-- Nós / Sensores piscando -->
+          <circle cx="650" cy="120" r="1.5" fill="#C89339" class="sensor-blink"/>
+          <circle cx="710" cy="180" r="1.5" fill="#C89339" class="sensor-blink" style="animation-delay: 0.5s"/>
+          <circle cx="850" cy="150" r="1.5" fill="#C89339" class="sensor-blink" style="animation-delay: 1s"/>
+          <circle cx="180" cy="250" r="1.5" fill="#C89339" class="sensor-blink" style="animation-delay: 0.3s"/>
+          <circle cx="900" cy="300" r="1.5" fill="#C89339" class="sensor-blink" style="animation-delay: 0.8s"/>
+        </g>
+
+        <!-- ════ ALVOS / CROSSHAIRS DO SISTEMA ════ -->
+        <g transform="translate(680, 250)" opacity="0.5">
+           <path d="M -15 -15 L -15 -20 L -10 -20 M 15 -15 L 15 -20 L 10 -20 M -15 15 L -15 20 L -10 20 M 15 15 L 15 20 L 10 20" fill="none" stroke="#A8412A" stroke-width="1"/>
+           <text x="0" y="28" text-anchor="middle" font-size="4" font-family="'Archivo Black',sans-serif" fill="#A8412A" letter-spacing="1">ÁREA PERFILADA</text>
+        </g>
+
+        <!-- ════ CAMADA DE DADOS E GPS (VLT) ════ -->
+        <!-- Se você colocou aquele código do passo anterior aqui embaixo, pode substituí-lo por este! -->
+        <g id="camada-fluxo">
+          <!-- Linha base fantasma -->
+          <line x1="0" y1="285" x2="1000" y2="285" stroke="#577387" stroke-width="4" opacity="0.15"/>
+          <!-- Linha animada simulando transmissão GPS -->
+          <line x1="0" y1="285" x2="1000" y2="285" class="data-flow-line"/>
+          
+          <!-- Bloco do "Veículo" Rastreado -->
+          <rect x="330" y="278" width="40" height="14" fill="none" stroke="#577387" stroke-width="0.8" stroke-dasharray="2 2"/>
+          <circle cx="350" cy="285" r="4" fill="#EFE5CE" stroke="#577387" stroke-width="1.5"/>
+          <circle cx="350" cy="285" r="1.5" fill="#C89339" class="sensor-blink"/>
+          <text x="350" y="274" text-anchor="middle" font-size="5" font-family="'Archivo Black',sans-serif" fill="#577387" letter-spacing="1">SINAL GPS · VLT-04</text>
+        </g>
         <circle cx="850" cy="80" r="38" fill="none" stroke="#1A1611" stroke-width=".8" stroke-dasharray="2 3"/>
         <circle cx="850" cy="80" r="22" fill="#C89339" opacity=".7"/>
         <g transform="translate(120,70)">
@@ -920,6 +977,13 @@ footer{
           </g>
         </g>
         <text x="900" y="397" font-size="6" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="1.5">→ DADOS · 89ms</text>
+        <!-- CAMADA DE FLUXO (VLT / BRT) -->
+        <g id="camada-fluxo" opacity="0.8">
+          <line x1="0" y1="285" x2="1000" y2="285" stroke="#577387" stroke-width="3" opacity="0.4"/>
+          <line x1="0" y1="285" x2="1000" y2="285" stroke="#F7EFD9" stroke-width="1.5" stroke-dasharray="12 6"/>
+          <rect x="340" y="282" width="20" height="6" fill="#577387" rx="2"/>
+          <text x="350" y="278" text-anchor="middle" font-size="5" font-family="'Archivo Black',sans-serif" fill="#577387" letter-spacing="1">VLT · LINHA 1</text>
+        </g>
         <text x="20" y="30" font-size="11" font-family="'Archivo Black',sans-serif" fill="#1A1611" letter-spacing="3">PRANCHA Nº 01 · CORTE TRANSVERSAL</text>
         <text x="20" y="43" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="2" opacity=".7">A CIDADE INTELIGENTE · ESCALA: VARIÁVEL · DECRETO 33.405/2020</text>
         <text x="980" y="30" text-anchor="end" font-size="7" font-family="'Archivo',sans-serif" fill="#1A1611" letter-spacing="2" opacity=".7">⌖ CLIQUE NOS NÚMEROS</text>
@@ -1128,6 +1192,7 @@ const HOTSPOT_POS = [
   {id:4,x:970,y:460,cor:'olive'},
   {id:5,x:710,y:345,cor:'brick'},
   {id:6,x:495,y:130,cor:'mustard'},
+  {id:7,x:350,y:285,cor:'blue'} // <--- ADICIONE ESTA LINHA (com a vírgula na linha anterior!)
 ];
 
 const FIO_PARES = [
@@ -1322,6 +1387,21 @@ const VINHETAS = [
       instrucao:'Explore as camadas do mapa como Heinrich. Ative cada camada para ver o que o algoritmo aprendeu:'
     },
     ficha:{texto:'"Algoritmos podem codificar desigualdades ao converter injustiças sociais em decisões automatizadas com aura de objetividade. O redlining não precisa de intenção. Precisa de dados históricos."',fonte:'Benjamin, Ruha. Race After Technology, 2019 · Silva, Tarcízio. Racismo Algorítmico, 2019'}
+  },
+  {
+    id:7, titulo:'SISTEMA SEMAFÓRICO INTEGRADO', subtitulo:'Cruzamento Av. Principal',
+    cor:'blue', cena:'O VLT-04 está 6 minutos atrasado.',
+    paragrafos:[
+      'O Centro de Operações de Mobilidade detecta que a composição do VLT perdeu o cronograma. Atrasos reduzem a nota da prefeitura nos relatórios de "Smart City".',
+      'O sistema sugere a ativação do protocolo "Onda Verde": sincronizar todos os semáforos da avenida principal para verde contínuo.',
+      'O que o painel não mostra com destaque: a via transversal é o corredor principal de ônibus que liga três bairros da periferia ao centro.'
+    ],
+    rodape:'↳ Otimização excludente. · A eficiência de um modal mascara o gargalo de outro.',
+    challenge:{
+      tipo:'onda_verde',
+      instrucao:'Ajuste o balanço semafórico para recuperar o atraso do VLT. Se o indicador ficar verde, o cronograma está salvo.'
+    },
+    ficha:{texto:'"A cidade inteligente frequentemente otimiza o que é quantificável e espetacular (o VLT, o BRT) às custas dos fluxos rotineiros e invisíveis da classe trabalhadora."',fonte:'Morozov, E. Big Tech e a Gestão Urbana, 2022'}
   }
 ];
 
@@ -1455,7 +1535,7 @@ function renderFooter() {
     btn.addEventListener('click', () => openVinheta(v.id));
     container.appendChild(btn);
   });
-  document.getElementById('count-num').textContent = `${state.visited.size}/6`;
+  document.getElementById('count-num').textContent = `${state.visited.size}/7`;
 }
 
 function updateLegibilidade() {
@@ -1464,7 +1544,7 @@ function updateLegibilidade() {
   document.getElementById('leg-fill').style.width = stage.pct + '%';
   const el = document.getElementById('leg-status');
   el.textContent = stage.label;
-  el.classList.toggle('alert', n === 6);
+  el.classList.toggle('alert', n === 7);
 }
 
 function updateFioVermelho() {
@@ -1473,8 +1553,8 @@ function updateFioVermelho() {
     const both = par.ids.every(id => state.completed.has(id));
     document.getElementById(par.el).classList.toggle('show', both);
   });
-  // Label central só aparece quando todas 6 foram completadas
-  const all = state.completed.size === 6;
+  // Label central só aparece quando todas 7 foram completadas
+  const all = state.completed.size === 7;
   document.getElementById('fio-label').classList.toggle('show', all);
 }
 // ════════════════════════════════════════
@@ -1560,7 +1640,7 @@ function closeFromReveal() {
   checkFim();
 }
 function checkFim() {
-  if (state.visited.size === 6) {
+  if (state.visited.size === 7) {
     document.getElementById('fim-fichas').textContent = state.fichas.length;
     setTimeout(() => document.getElementById('fim-overlay').classList.add('show'), 600);
   }
@@ -1946,6 +2026,7 @@ function renderChallenge(id) {
   else if (ch.tipo === 'rota') renderRota(body, v, ch, color);
   else if (ch.tipo === 'relatorio') renderRelatorio(body, v, ch, color);
   else if (ch.tipo === 'mapa') renderMapaRedlining(body, v, ch, color);
+  else if (ch.tipo === 'onda_verde') renderOndaVerde(body, v, ch, color); // <--- ADICIONE ESTA
 }
 
 // V1 — Decisão
@@ -1963,6 +2044,71 @@ function renderDecisao(body, v, ch, color) {
       btn.style.backgroundColor = color;
       const rev = ch.revelar[opt.id];
       // mostra feedback visual breve antes do reveal
+    // V7 — Onda Verde
+function renderOndaVerde(body, v, ch, color) {
+  const container = document.createElement('div');
+  container.style.cssText = 'padding:14px; background:var(--paperDark); border:1.5px solid var(--ink); margin-bottom:14px;';
+  
+  container.innerHTML = `
+    <div style="display:flex; justify-content:space-between; font-family:'Archivo Black',sans-serif; font-size:10px; letter-spacing:1px; margin-bottom:10px;">
+      <span style="color:${color}">EIXO VLT (NOBRE)</span>
+      <span style="color:var(--brick)">EIXO ÔNIBUS (TRANSVERSAL)</span>
+    </div>
+    <input type="range" id="slider-semaforo" min="0" max="100" value="50" style="width:100%; margin-bottom:14px;">
+    <div style="display:flex; justify-content:space-between; font-size:11px;">
+      <div id="vlt-status">Atraso: 6 min</div>
+      <div id="bus-status" style="text-align:right;">Fila: Padrão</div>
+    </div>
+  `;
+  body.appendChild(container);
+
+  const btnConfirma = document.createElement('button');
+  btnConfirma.className = 'modal-nav-btn';
+  btnConfirma.textContent = 'APLICAR SINCRONIZAÇÃO';
+  btnConfirma.disabled = true;
+  btnConfirma.style.opacity = '.4';
+
+  const navWrap = document.createElement('div');
+  navWrap.className = 'modal-nav';
+  navWrap.appendChild(btnConfirma);
+  document.getElementById('phase-challenge').appendChild(navWrap);
+
+  const slider = document.getElementById('slider-semaforo');
+  const vltStatus = document.getElementById('vlt-status');
+  const busStatus = document.getElementById('bus-status');
+
+  slider.addEventListener('input', (e) => {
+    const val = parseInt(e.target.value);
+    
+    // VLT Status
+    if (val < 30) vltStatus.innerHTML = 'Atraso: <span style="color:var(--brick);font-weight:bold">12 min (CRÍTICO)</span>';
+    else if (val < 75) vltStatus.innerHTML = 'Atraso: 6 min';
+    else vltStatus.innerHTML = 'Atraso: <span style="color:var(--olive);font-weight:bold">0 min (CRONOGRAMA SALVO)</span>';
+
+    // Bus Status
+    if (val < 30) busStatus.innerHTML = 'Fila: Rápida';
+    else if (val < 75) busStatus.innerHTML = 'Fila: Padrão';
+    else busStatus.innerHTML = 'Fila: <span style="color:var(--brick);font-weight:bold">Espera > 45 min</span>';
+
+    // Só permite confirmar se o VLT estiver salvo (val >= 75)
+    if (val >= 75) {
+      btnConfirma.disabled = false;
+      btnConfirma.style.opacity = '1';
+    } else {
+      btnConfirma.disabled = true;
+      btnConfirma.style.opacity = '.4';
+    }
+  });
+
+  btnConfirma.addEventListener('click', () => {
+    showResultadoBreve('✓ ONDA VERDE ATIVADA · CRONOGRAMA DO VLT SALVO', color, 2000, () => {
+      showReveal(v.id, 
+        'OTIMIZAÇÃO APLICADA · EFEITO COLATERAL IGNORADO', 
+        'Você salvou o cronograma do VLT. No painel de métricas da prefeitura, o sistema de mobilidade inteligente operou com 100% de eficiência. Contudo, na via transversal, 12 ônibus que transportam trabalhadores da periferia ficaram retidos no trânsito por mais de 45 minutos. O algoritmo otimizou o sistema para a métrica que é monitorada, transferindo o caos para as zonas e pessoas que a "inteligência" não enxerga.', 
+        null);
+    });
+  });
+}
       showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
         showReveal(v.id, rev.titulo, rev.texto, rev.toast);
       });
