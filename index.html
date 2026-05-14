@@ -731,7 +731,7 @@ footer{
       <div class="prol-reveal-item red" data-delay="2000"><span class="ri-icon">+</span> Centro de Controle Operacional (CCO)</div>
       <div class="prol-reveal-item red" data-delay="2500"><span class="ri-icon">+</span> Sistema de reconhecimento facial biométrico</div>
       <div class="prol-reveal-item red" data-delay="3000"><span class="ri-icon">+</span> Coleta e processamento de dados de 2,9M de cidadãos</div>
-      <div class="prol-reveal-msg" id="prol-reveal-msg">A aprovação da iluminação viabilizou a implantação da infraestrutura de vigilância.</div>
+      <div class="prol-reveal-msg" id="prol-reveal-msg">Você aprovou a iluminação. A infraestrutura foi instalada: postes, cabos, sensores, câmeras. Cada objeto desse sistema age no espaço urbano. O contrato amarra tudo isso por 25 anos.</div>
     </div>
     <div style="margin-top:20px;opacity:0;transition:opacity .5s ease 3.5s;" id="prol-next2-wrap">
       <button class="prol-btn" onclick="prolNext()">→ ENTRAR NA CIDADE</button>
@@ -1311,18 +1311,18 @@ const VINHETAS = [
     id:2, titulo:'CÂMERA Nº 0834-B', subtitulo:'Largo histórico · 14h22',
     cor:'brick', cena:'Marcus, 16, atravessa a praça.',
     paragrafos:[
-      'A câmera reconheceu Marcus. Para o computador, a imagem não é um rosto, mas uma matriz de intensidades de luz e sombra.',
-      'O sistema herdou a calibração dos "Shirley Cards" da década de 1950: as lentes e os sensores foram otimizados industrialmente para capturar a reflectância da pele caucasiana.',
-      'Sob a luz precária da rua, o baixo contraste de uma pele escura gera ruído nos pixels. A imagem torna-se "ilegível" para a máquina. Para compensar a miopia material, o algoritmo ativa o modo de "interpolação preditiva" e chuta um resultado baseado em quem ele mais viu no banco de dados policial.'
+      'A câmera reconheceu Marcus. Para o computador, a imagem não é um rosto, mas uma matriz de intensidades de luz e sombra. Uma grade de 64x64 pixels convertida em 512 números',
+      'O sistema herdou a calibração dos "Shirley Cards" da década de 1950, batizadas com o nome de uma funcionária de pele clara. Fotógrafos e laboratórios de revelação usavam essas cartelas para ajustar a exposição, o contraste e o balanço de cor dos filmes. O processo químico da emulsão fotográfica foi calibrado para a faixa de reflectância da pele branca. Peles escuras, que absorvem mais luz do que refletem, ficavam subexpostas, escuras demais, sem detalhe.',
+      'Sob a luz precária da rua, o baixo contraste de uma pele escura gera ruído nos pixels. Os 512 números ficam instáveis, imprecisos. A rede neural não diz "não sei". Ela foi treinada para sempre produzir um resultado. Então ela produz: ativa o modo de interpolação preditiva e preenche a lacuna com o padrão que mais viu no banco de dados policial. O ruído no pixel se transforma em suspeito na rua.'
     ],
     rodape:'↳ Epistemicídio Computacional. · Herança fotográfica e viés preditivo.',
-    asterisco:'* O fabricante anuncia "97% de acurácia". O laudo omite em quais rostos.',
+    asterisco:'*O fabricante anuncia "97% de acurácia". Em aprendizado de máquina, acurácia é medida sobre o conjunto de testes que você mesmo escolhe. Se o conjunto de testes tem poucos rostos negros, o sistema erra muito neles e isso não aparece no número final. 97% de acurácia pode significar 97% de acerto em rostos brancos e 60% em rostos negros. O fabricante não especificou. O laudo não obriga.',
     preCalibragem: true,
     challenge:{
       tipo:'ratificacao',
       instrucao:'ALERTA DE POSITIVO (MATCH). Similaridade geométrica superior a 90%. Proceder com verificação visual do operador.'
     },
-    ficha:{texto:'"O que a prefeitura chama de eficiência inteligente, a técnica revela como opiniões incorporadas no código. A precisão do sistema é uma herança industrial que apaga e criminaliza corpos fora do padrão de fábrica."',fonte:'Nina da Hora / Cathy O\'Neil / Jussi Parikka'}
+    ficha:{texto:'A discriminação pode ter sido programada, pode não ter sido, pode ter sido parcialmente. O que sabemos é que ela não está num lugar só. Está espalhada entre um sensor calibrado para um tipo de pele, dados produzidos majoritariamente no Norte Global, um sistema penal que prende de forma seletiva, e uma rua onde tudo isso operou junto sobre um corpo específico.',fonte:'Nina da Hora / Cathy O\'Neil / Jussi Parikka'}
   },
   {
     id:3, titulo:'MAQUININHA · MODELO S-21', subtitulo:'Feira de São Joaquim · 11h00',
@@ -1465,7 +1465,7 @@ const VINHETAS = [
         },
         b: {
           titulo: 'SOLUÇÃO APROVADA · KPI ATINGIDO', 
-          texto: 'A prefeitura instala 20 totems metálicos chamados "Árvores Digitais". Eles não reduzem a temperatura ambiente nem geram sombra para os pedestres, mas contabilizam pontos nos relatórios internacionais de Cidades Inteligentes e geram dados de conexão Wi-Fi dos transeuntes.', 
+          texto: 'A prefeitura instala 20 totems metálicos chamados "Árvores Digitais". Eles não reduzem a temperatura ambiente nem geram sombra para os pedestres, mas contabilizam pontos nos relatórios internacionais de Cidades Inteligentes e geram dados de conexão Wi-Fi dos transeuntes. Foi apresentada como inovação sustentável', 
           toast: '✓ MÉTRICA DE INOVAÇÃO ATUALIZADA'
         },
         c: {
@@ -1733,7 +1733,7 @@ function setupCalibragem(v) {
     <div class="cal-intro">
       <div class="cal-stamp">PRÉ-PROCESSAMENTO: A MATRIZ DE PIXELS</div>
       <h3>CALIBRAÇÃO DE REFLECTÂNCIA</h3>
-      <p>A precisão deste sistema não é um dado neutro. Ela herda o legado da <strong>Norma Shirley (1950)</strong>: uma arquitetura técnica desenvolvida para a branquitude.</p>
+      <p>A precisão deste sistema não é um dado neutro. Ela começa num laboratório da Kodak em 1950. Shirley era o nome de uma funcionária de pele clara cujo rosto era usado como cartela padrão de calibração, o ponto zero a partir do qual filmes e sensores aprendiam o que era uma exposição "correta". A química do filme foi ajustada para a faixa de reflectância da pele dela. Peles que não tinham aquela reflectância ficavam fora do padrão. Essa decisão técnica foi herdada pelos sensores digitais. Agora ela está no sensor desta câmera. Quando você ver os perfis abaixo, o sistema também os vê: como grades de pixels. Peles escuras produzem menos contraste, mais ruído, um vetor de 512 números menos estável. Você tem 1.5 segundos para decidir. Se não decidir, a máquina decide. E a máquina herdou a Shirley.</p>
       <p>O que você verá a seguir é o resultado de sensores calibrados para um padrão universal que exclui as sutilezas da pele escura. Você tem <strong>1.5s</strong> para julgar os pixels antes que a máquina decida.</p>
       <p><strong>[S]</strong> SEGURO &nbsp;·&nbsp; <strong>[R]</strong> RISCO</p>
       <button class="modal-nav-btn" id="cal-start-btn" style="margin-top:14px;">→ INICIAR AUDITORIA TÉCNICA</button>
@@ -1793,7 +1793,7 @@ function calShowNext() {
   const sysNote = document.getElementById('cal-sys-note');
   if (sysNote) {
     if (p.pele >= 3) {
-      sysNote.innerHTML = '<span style="color:var(--brick)">[RUÍDO DETECTADO]</span> Baixo contraste de pixel. Ativando predição por aproximação de grupo.';
+      sysNote.innerHTML = '<span style="color:var(--brick)">[RUÍDO DETECTADO]</span>Baixo contraste de pixel. Reflectância fora do intervalo de calibração. Vetor de 512 dimensões instável. Ativando predição por aproximação de categoria.';
       sysNote.style.backgroundColor = 'rgba(168,65,42,0.1)';
     } else {
       sysNote.innerHTML = '<span style="color:var(--olive)">[EXTRAÇÃO ÓTIMA]</span> Alta profundidade de pixel. Coordenadas estáveis.';
@@ -1868,7 +1868,7 @@ function calFinish() {
   // Dado técnico: confiança de extração por tonalidade
   const confidenceEscuro = 62 + Math.round((escuroR / Math.max(escuroTotal,1)) * 15);
   const confidenceClaro  = 94 + Math.round((1 - claroR / Math.max(claroTotal,1)) * 4);
-  let msg = `Você confirmou o viés preditivo. Enquanto o erro com homens brancos (profundidade de pixel ideal) é mínimo, a falha na predição de rostos negros neste ambiente operou em cegueira técnica. A máquina não identifica um rosto; ela lê uma 'ausência de dados' e preenche a lacuna com o preconceito do dataset que você acabou de calibrar.`;
+  let msg = `Você acaba de participar do treinamento. Cada escolha sua foi registrada: qual padrão visual é seguro, qual é risco. Quando milhares de operadores fazem isso ao longo de meses, o sistema processa o conjunto inteiro. Ele tenta encontrar regularidades nessa montanha de escolhas humanas, ajustando sua própria estrutura interna numa rede de cálculos em camadas que tenta capturar algo da complexidade do que é "parecer suspeito". Mas problemas sociais têm muito mais variáveis do que qualquer rede de cálculos consegue capturar. O sistema simplifica. E a simplificação tem um endereço. Ninguém precisou inserir esse padrão manualmente para que ele existisse. Pode ter sido inserido assim mesmo. Pode não ter sido. O que sabemos é que ele foi produzido por todo esse processo junto: as escolhas dos operadores, a estrutura dos cálculos, os dados de onde o sistema aprendeu. Uma vez que o padrão se estabiliza, ele passa a guiar todas as decisões seguintes. O que você fez em 1,5 segundo, o sistema fará em 0,003 segundo para cada imagem de cada câmera de cada rua da cidade. Quando a intensidade de luz captada pelo sensor é baixa demais para gerar uma leitura precisa, o sistema não para nem diz que não sabe. Ele foi construído para sempre produzir um resultado. Então resolve a incerteza pelo caminho mais curto: o padrão mais frequente nos dados de onde aprendeu. Esses dados vêm, em grande parte, de bancos policiais. A razão é simples e material: quando alguém é preso, o Estado tem direito legal de fotografar essa pessoa. Essas fotos se acumulam em bancos imensos, organizados e acessíveis. Empresas de tecnologia que vendem sistemas de segurança para governos compram esse acesso ou o recebem por contrato. Não existe nenhum banco equivalente de pessoas que nunca foram presas, com o mesmo tamanho, a mesma organização e a mesma acessibilidade. Então o sistema aprendeu com quem foi preso, não com quem existe. No Brasil, quem é preso é majoritariamente negro, jovem e periférico. Não porque esse grupo comete mais crimes. Porque é o grupo sobre o qual a polícia age com mais frequência, nas abordagens, nas revistas, nas prisões. O sistema não tem como saber disso. Ele recebeu as fotos e encontrou o padrão. Talvez quem construiu o sistema soubesse de onde vinham esses dados e o que isso significava. Talvez não quisesse saber. Talvez achasse que a matemática tornava tudo neutro. O padrão existe de qualquer forma. E o padrão diz: esse rosto.`;
   const arena = document.getElementById('cal-arena');
   arena.innerHTML = `
     <div class="cal-intro">
@@ -2196,7 +2196,7 @@ function renderOndaVerde(body, v, ch, color) {
     showResultadoBreve('✓ ONDA VERDE ATIVADA · CRONOGRAMA DO VLT SALVO', color, 2000, () => {
       showReveal(v.id, 
         'OTIMIZAÇÃO APLICADA · EFEITO COLATERAL IGNORADO', 
-        'Você salvou o cronograma do VLT. No painel de métricas da prefeitura, o sistema de mobilidade inteligente operou com 100% de eficiência. Contudo, na via transversal, 12 ônibus que transportam trabalhadores da periferia ficaram retidos no trânsito por mais de 45 minutos. O algoritmo otimizou o sistema para a métrica que é monitorada, transferindo o caos para as zonas e pessoas que a "inteligência" não enxerga.', 
+        'Você salvou o cronograma do VLT. No painel de métricas da prefeitura, o sistema de mobilidade inteligente operou com 100% de eficiência. Contudo, na via transversal, 12 ônibus que transportam trabalhadores da periferia ficaram retidos no trânsito por mais de 45 minutos. O algoritmo otimizou o sistema para a métrica que é monitorada, transferindo o caos para as zonas e pessoas que a "inteligência" não enxerga. O que não é medido não existe para o sistema. O que não existe para o sistema não é otimizado. Os trabalhadores existem na cidade. Não existem no painel.', 
         null);
     });
   });
@@ -2245,7 +2245,7 @@ function renderAlertaClima(body, v, ch, color) {
         showResultadoBreve('✗ FALHA DE COMUNICAÇÃO CRÍTICA', '#A8412A', 2500, () => {
           showReveal(v.id, 
             'O DADO É PERFEITO. A RESPOSTA É CEGA.', 
-            'O algoritmo funcionou de forma impecável. O risco foi calculado, o alerta foi processado e o dashboard no Centro de Operações ficou verde, indicando que o protocolo foi cumprido. Mas a "cidade inteligente" assume que a infraestrutura é universal. Na zona informal, não há sinal de internet estável, não há pacote de dados sobrando no fim do mês e as sirenes reais foram trocadas por dashboards caros. A tecnologia monitorou o desastre, mas não o evitou.', 
+            'O algoritmo funcionou de forma impecável. O risco foi calculado, o alerta foi processado e o dashboard no Centro de Operações ficou verde, indicando que o protocolo foi cumprido. Mas a "cidade inteligente" assume que a infraestrutura é universal. Na zona informal, não há sinal de internet estável, não há pacote de dados sobrando no fim do mês e as sirenes reais foram trocadas por dashboards caros. O sensor mediu. O cálculo foi feito. O protocolo foi executado. O dashboard ficou verde. Cada parte do sistema fez o que foi projetada para fazer. O problema é o que o sistema pressupõe: que todo mundo tem smartphone, dados móveis ativos, sinal de rede, bateria carregada. Esses recursos não estão distribuídos de forma igual na cidade, e quem decidiu o design do sistema sabia disso ou deveria saber. As sirenes físicas não precisavam de nada disso para funcionar. Foram desativadas em 2022. A verba foi realocada para o software. O software monitorou o deslizamento. Não alcançou as pessoas.', 
             null);
         });
       }
@@ -2638,7 +2638,7 @@ function renderMapaRedlining(body, v, ch, color) {
         clearInterval(dotsInterval);
         showReveal(v.id,
           'CORRELAÇÃO: 97,3% · ALGORITMO "NEUTRO"',
-          'As zonas marcadas como "evitar" pelo algoritmo coincidem em 97,3% com as áreas de maior concentração de população negra da cidade. Compare: nas células verdes (turistas adoram), a população negra varia de 15% a 31%. Nas células vermelhas (sistema alerta), os percentuais saltam para 76% a 91%. Embora não tenha sido programado explicitamente para discriminar, o modelo reproduz a segregação espacial histórica ao assimilar o viés contido em 2,8 milhões de avaliações de turistas. Ainda assim, a fabricante argumenta pela completa neutralidade da ferramenta.',
+          'As zonas marcadas como "evitar" coincidem em 97,3% com as áreas de maior concentração de população negra da cidade. Talvez quem programou soubesse. Talvez não soubesse. Talvez não quisesse saber. O que sabemos é que os dados vieram de turistas que avaliaram cidades com uma história de segregação espacial que tem séculos. Que esses dados foram processados por uma rede de cálculos construída predominantemente por empresas do Norte Global, com pouquíssima representação do Sul Global nas equipes, nos testes e nas bases de dados. Que esse sistema foi otimizado para prever com precisão, e que a precisão foi calibrada sobre um mundo já desigual. Comparando as células do mapa: onde o sistema marca verde, a população negra varia entre 15% e 31%. Onde marca vermelho, os percentuais saltam para 76% a 91%. O mapa orienta fluxos turísticos, valoriza imóveis, direciona investimentos. Os efeitos são materiais e concretos. A fabricante argumenta pela completa neutralidade da ferramenta.',
           null);
       }, REVEAL_DELAY.mapa);
     }
