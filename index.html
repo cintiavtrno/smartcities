@@ -1625,8 +1625,7 @@ function closeModal() {
   if (state.cal.tickInterval) clearTimeout(state.cal.tickInterval);
   checkFim();
 }
-
-function closeFromReveal() {
+ function closeFromReveal() {
   const v = VINHETAS.find(x => x.id === state.currentVinheta);
   if (v && !state.completed.has(v.id)) {
     state.completed.add(v.id);
@@ -1639,6 +1638,7 @@ function closeFromReveal() {
   if (state.timerInterval) clearInterval(state.timerInterval);
   checkFim();
 }
+
 function checkFim() {
   if (state.visited.size === 7) {
     document.getElementById('fim-fichas').textContent = state.fichas.length;
@@ -2028,7 +2028,6 @@ function renderChallenge(id) {
   else if (ch.tipo === 'mapa') renderMapaRedlining(body, v, ch, color);
   else if (ch.tipo === 'onda_verde') renderOndaVerde(body, v, ch, color); // <--- ADICIONE ESTA
 }
-
 // V1 — Decisão
 function renderDecisao(body, v, ch, color) {
   const wrap = document.createElement('div');
@@ -2044,7 +2043,16 @@ function renderDecisao(body, v, ch, color) {
       btn.style.backgroundColor = color;
       const rev = ch.revelar[opt.id];
       // mostra feedback visual breve antes do reveal
-    // V7 — Onda Verde
+      showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
+        showReveal(v.id, rev.titulo, rev.texto, rev.toast);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+  body.appendChild(wrap);
+}
+
+// V7 — Onda Verde
 function renderOndaVerde(body, v, ch, color) {
   const container = document.createElement('div');
   container.style.cssText = 'padding:14px; background:var(--paperDark); border:1.5px solid var(--ink); margin-bottom:14px;';
@@ -2109,15 +2117,6 @@ function renderOndaVerde(body, v, ch, color) {
     });
   });
 }
-      showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
-        showReveal(v.id, rev.titulo, rev.texto, rev.toast);
-      });
-    });
-    wrap.appendChild(btn);
-  });
-  body.appendChild(wrap);
-}
-
 // V2 — Score faces (com silhuetas)
 function renderScore(body, v, ch, color) {
   const grid = document.createElement('div');
