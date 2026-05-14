@@ -1304,7 +1304,6 @@ const VINHETAS = [
     },
     ficha:{texto:'"A cidade inteligente frequentemente otimiza o que é quantificável e espetacular (o VLT, o BRT) às custas dos fluxos rotineiros e invisíveis da classe trabalhadora."'}
   },
-  {
     {
     id:2, titulo:'CÂMERA Nº 0834-B', subtitulo:'Largo histórico · 14h22',
     cor:'brick', cena:'Marcus, 16, atravessa a praça.',
@@ -2036,146 +2035,146 @@ function renderChallenge(id) {
 }
 // V1 — Decisão
 function renderDecisao(body, v, ch, color) {
-  const wrap = document.createElement('div');
-  wrap.className = 'ch-opcoes';
-  ch.opcoes.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'ch-opcao-btn';
-    btn.innerHTML = `<span class="ch-opt-label">${opt.label}</span><span class="ch-opt-sub">${opt.sub}</span>`;
-    btn.style.borderColor = color;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.ch-opcao-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      btn.style.backgroundColor = color;
-      const rev = ch.revelar[opt.id];
-      // mostra feedback visual breve antes do reveal
-      showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
-        showReveal(v.id, rev.titulo, rev.texto, rev.toast);
-      });
-    });
-    wrap.appendChild(btn);
-  });
-  body.appendChild(wrap);
+  const wrap = document.createElement('div');
+  wrap.className = 'ch-opcoes';
+  ch.opcoes.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'ch-opcao-btn';
+    btn.innerHTML = `<span class="ch-opt-label">${opt.label}</span><span class="ch-opt-sub">${opt.sub}</span>`;
+    btn.style.borderColor = color;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ch-opcao-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.style.backgroundColor = color;
+      const rev = ch.revelar[opt.id];
+      // mostra feedback visual breve antes do reveal
+      showResultadoBreve(`✓ AÇÃO REGISTRADA · ${opt.label}`, color, REVEAL_DELAY.decisao, () => {
+        showReveal(v.id, rev.titulo, rev.texto, rev.toast);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+  body.appendChild(wrap);
 }
 
 // V7 — Onda Verde
 function renderOndaVerde(body, v, ch, color) {
-  const container = document.createElement('div');
-  container.style.cssText = 'padding:14px; background:var(--paperDark); border:1.5px solid var(--ink); margin-bottom:14px;';
-  
-  container.innerHTML = `
-    <div style="display:flex; justify-content:space-between; font-family:'Archivo Black',sans-serif; font-size:10px; letter-spacing:1px; margin-bottom:10px;">
-      <span style="color:${color}">EIXO VLT (NOBRE)</span>
-      <span style="color:var(--brick)">EIXO ÔNIBUS (TRANSVERSAL)</span>
-    </div>
-    <input type="range" id="slider-semaforo" min="0" max="100" value="50" style="width:100%; margin-bottom:14px;">
-    <div style="display:flex; justify-content:space-between; font-size:11px;">
-      <div id="vlt-status">Atraso: 6 min</div>
-      <div id="bus-status" style="text-align:right;">Fila: Padrão</div>
-    </div>
-  `;
-  body.appendChild(container);
+  const container = document.createElement('div');
+  container.style.cssText = 'padding:14px; background:var(--paperDark); border:1.5px solid var(--ink); margin-bottom:14px;';
+  
+  container.innerHTML = `
+    <div style="display:flex; justify-content:space-between; font-family:'Archivo Black',sans-serif; font-size:10px; letter-spacing:1px; margin-bottom:10px;">
+      <span style="color:${color}">EIXO VLT (NOBRE)</span>
+      <span style="color:var(--brick)">EIXO ÔNIBUS (TRANSVERSAL)</span>
+    </div>
+    <input type="range" id="slider-semaforo" min="0" max="100" value="50" style="width:100%; margin-bottom:14px;">
+    <div style="display:flex; justify-content:space-between; font-size:11px;">
+      <div id="vlt-status">Atraso: 6 min</div>
+      <div id="bus-status" style="text-align:right;">Fila: Padrão</div>
+    </div>
+  `;
+  body.appendChild(container);
 
-  const btnConfirma = document.createElement('button');
-  btnConfirma.className = 'modal-nav-btn';
-  btnConfirma.textContent = 'APLICAR SINCRONIZAÇÃO';
-  btnConfirma.disabled = true;
-  btnConfirma.style.opacity = '.4';
+  const btnConfirma = document.createElement('button');
+  btnConfirma.className = 'modal-nav-btn';
+  btnConfirma.textContent = 'APLICAR SINCRONIZAÇÃO';
+  btnConfirma.disabled = true;
+  btnConfirma.style.opacity = '.4';
 
-  const navWrap = document.createElement('div');
-  navWrap.className = 'modal-nav';
-  navWrap.appendChild(btnConfirma);
-  document.getElementById('phase-challenge').appendChild(navWrap);
+  const navWrap = document.createElement('div');
+  navWrap.className = 'modal-nav';
+  navWrap.appendChild(btnConfirma);
+  document.getElementById('phase-challenge').appendChild(navWrap);
 
-  const slider = document.getElementById('slider-semaforo');
-  const vltStatus = document.getElementById('vlt-status');
-  const busStatus = document.getElementById('bus-status');
+  const slider = document.getElementById('slider-semaforo');
+  const vltStatus = document.getElementById('vlt-status');
+  const busStatus = document.getElementById('bus-status');
 
-  slider.addEventListener('input', (e) => {
-    const val = parseInt(e.target.value);
-    
-    // VLT Status
-    if (val < 30) vltStatus.innerHTML = 'Atraso: <span style="color:var(--brick);font-weight:bold">12 min (CRÍTICO)</span>';
-    else if (val < 75) vltStatus.innerHTML = 'Atraso: 6 min';
-    else vltStatus.innerHTML = 'Atraso: <span style="color:var(--olive);font-weight:bold">0 min (CRONOGRAMA SALVO)</span>';
+  slider.addEventListener('input', (e) => {
+    const val = parseInt(e.target.value);
+    
+    // VLT Status
+    if (val < 30) vltStatus.innerHTML = 'Atraso: <span style="color:var(--brick);font-weight:bold">12 min (CRÍTICO)</span>';
+    else if (val < 75) vltStatus.innerHTML = 'Atraso: 6 min';
+    else vltStatus.innerHTML = 'Atraso: <span style="color:var(--olive);font-weight:bold">0 min (CRONOGRAMA SALVO)</span>';
 
-    // Bus Status
-    if (val < 30) busStatus.innerHTML = 'Fila: Rápida';
-    else if (val < 75) busStatus.innerHTML = 'Fila: Padrão';
-    else busStatus.innerHTML = 'Fila: <span style="color:var(--brick);font-weight:bold">Espera > 45 min</span>';
+    // Bus Status
+    if (val < 30) busStatus.innerHTML = 'Fila: Rápida';
+    else if (val < 75) busStatus.innerHTML = 'Fila: Padrão';
+    else busStatus.innerHTML = 'Fila: <span style="color:var(--brick);font-weight:bold">Espera > 45 min</span>';
 
-    // Só permite confirmar se o VLT estiver salvo (val >= 75)
-    if (val >= 75) {
-      btnConfirma.disabled = false;
-      btnConfirma.style.opacity = '1';
-    } else {
-      btnConfirma.disabled = true;
-      btnConfirma.style.opacity = '.4';
-    }
-  });
+    // Só permite confirmar se o VLT estiver salvo (val >= 75)
+    if (val >= 75) {
+      btnConfirma.disabled = false;
+      btnConfirma.style.opacity = '1';
+    } else {
+      btnConfirma.disabled = true;
+      btnConfirma.style.opacity = '.4';
+    }
+  });
 
-  btnConfirma.addEventListener('click', () => {
-    showResultadoBreve('✓ ONDA VERDE ATIVADA · CRONOGRAMA DO VLT SALVO', color, 2000, () => {
-      showReveal(v.id, 
-        'OTIMIZAÇÃO APLICADA · EFEITO COLATERAL IGNORADO', 
-        'Você salvou o cronograma do VLT. No painel de métricas da prefeitura, o sistema de mobilidade inteligente operou com 100% de eficiência. Contudo, na via transversal, 12 ônibus que transportam trabalhadores da periferia ficaram retidos no trânsito por mais de 45 minutos. O algoritmo otimizou o sistema para a métrica que é monitorada, transferindo o caos para as zonas e pessoas que a "inteligência" não enxerga.', 
-        null);
-    });
-  });
+  btnConfirma.addEventListener('click', () => {
+    showResultadoBreve('✓ ONDA VERDE ATIVADA · CRONOGRAMA DO VLT SALVO', color, 2000, () => {
+      showReveal(v.id, 
+        'OTIMIZAÇÃO APLICADA · EFEITO COLATERAL IGNORADO', 
+        'Você salvou o cronograma do VLT. No painel de métricas da prefeitura, o sistema de mobilidade inteligente operou com 100% de eficiência. Contudo, na via transversal, 12 ônibus que transportam trabalhadores da periferia ficaram retidos no trânsito por mais de 45 minutos. O algoritmo otimizou o sistema para a métrica que é monitorada, transferindo o caos para as zonas e pessoas que a "inteligência" não enxerga.', 
+        null);
+    });
+  });
 }
 
 // V8 — Alerta Climático
 function renderAlertaClima(body, v, ch, color) {
-  const container = document.createElement('div');
-  container.style.cssText = 'display:flex; flex-direction:column; gap:10px;';
+  const container = document.createElement('div');
+  container.style.cssText = 'display:flex; flex-direction:column; gap:10px;';
 
-  const painel = document.createElement('div');
-  painel.style.cssText = 'background:var(--ink); color:var(--bone); padding:16px; font-family:"Archivo Black",sans-serif; font-size:10px; letter-spacing:1px;';
-  painel.innerHTML = `
-    <div style="color:var(--brick); margin-bottom:8px;">⚠ ALERTA DE DESLIZAMENTO ATIVO</div>
-    <div>POPULAÇÃO ESTIMADA NO RAIO: 4.200 HAB.</div>
-    <div style="margin-top:12px; border-top:1px solid var(--paperDark); padding-top:8px;" id="log-alertas">
-      AGUARDANDO AUDITORIA DE CANAIS...
-    </div>
-  `;
-  body.appendChild(painel);
+  const painel = document.createElement('div');
+  painel.style.cssText = 'background:var(--ink); color:var(--bone); padding:16px; font-family:"Archivo Black",sans-serif; font-size:10px; letter-spacing:1px;';
+  painel.innerHTML = `
+    <div style="color:var(--brick); margin-bottom:8px;">⚠ ALERTA DE DESLIZAMENTO ATIVO</div>
+    <div>POPULAÇÃO ESTIMADA NO RAIO: 4.200 HAB.</div>
+    <div style="margin-top:12px; border-top:1px solid var(--paperDark); padding-top:8px;" id="log-alertas">
+      AGUARDANDO AUDITORIA DE CANAIS...
+    </div>
+  `;
+  body.appendChild(painel);
 
-  const canais = [
-    { id: 'app', label: 'NOTIFICAÇÃO VIA APP "SMART CIDADE"', result: 'ENTREGA: 4% (Falta de smartphones compatíveis / Pacote de dados inativo)' },
-    { id: 'sms', label: 'DISPARO DE SMS EM MASSA', result: 'ENTREGA: 28% (Área classificada como "sombra" pelas operadoras de telefonia)' },
-    { id: 'sirene', label: 'SIRENE FÍSICA E ALARME SONORO', result: 'FALHA: Equipamentos desativados em 2022. Verba realocada para licitação de software.' }
-  ];
+  const canais = [
+    { id: 'app', label: 'NOTIFICAÇÃO VIA APP "SMART CIDADE"', result: 'ENTREGA: 4% (Falta de smartphones compatíveis / Pacote de dados inativo)' },
+    { id: 'sms', label: 'DISPARO DE SMS EM MASSA', result: 'ENTREGA: 28% (Área classificada como "sombra" pelas operadoras de telefonia)' },
+    { id: 'sirene', label: 'SIRENE FÍSICA E ALARME SONORO', result: 'FALHA: Equipamentos desativados em 2022. Verba realocada para licitação de software.' }
+  ];
 
-  let canaisTestados = 0;
+  let canaisTestados = 0;
 
-  canais.forEach(canal => {
-    const btn = document.createElement('button');
-    btn.className = 'ch-opcao-btn';
-    btn.innerHTML = `<span class="ch-opt-label">${canal.label}</span>`;
-    btn.style.borderColor = color;
-    
-    btn.addEventListener('click', () => {
-      if (btn.classList.contains('selected')) return;
-      btn.classList.add('selected');
-      btn.style.backgroundColor = color;
-      btn.innerHTML = `<span class="ch-opt-label" style="color:var(--bone)">${canal.label}</span><span class="ch-opt-sub" style="color:var(--bone); opacity:0.9;">${canal.result}</span>`;
-      
-      canaisTestados++;
-      document.getElementById('log-alertas').textContent = `CANAIS TESTADOS: ${canaisTestados}/3`;
+  canais.forEach(canal => {
+    const btn = document.createElement('button');
+    btn.className = 'ch-opcao-btn';
+    btn.innerHTML = `<span class="ch-opt-label">${canal.label}</span>`;
+    btn.style.borderColor = color;
+    
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('selected')) return;
+      btn.classList.add('selected');
+      btn.style.backgroundColor = color;
+      btn.innerHTML = `<span class="ch-opt-label" style="color:var(--bone)">${canal.label}</span><span class="ch-opt-sub" style="color:var(--bone); opacity:0.9;">${canal.result}</span>`;
+      
+      canaisTestados++;
+      document.getElementById('log-alertas').textContent = `CANAIS TESTADOS: ${canaisTestados}/3`;
 
-      if (canaisTestados === 3) {
-        showResultadoBreve('✗ FALHA DE COMUNICAÇÃO CRÍTICA', '#A8412A', 2500, () => {
-          showReveal(v.id, 
-            'O DADO É PERFEITO. A RESPOSTA É CEGA.', 
-            'O algoritmo funcionou de forma impecável. O risco foi calculado, o alerta foi processado e o dashboard no Centro de Operações ficou verde, indicando que o protocolo foi cumprido. Mas a "cidade inteligente" assume que a infraestrutura é universal. Na zona informal, não há sinal de internet estável, não há pacote de dados sobrando no fim do mês e as sirenes reais foram trocadas por dashboards caros. A tecnologia monitorou o desastre, mas não o evitou.', 
-            null);
-        });
-      }
-    });
-    container.appendChild(btn);
-  });
+      if (canaisTestados === 3) {
+        showResultadoBreve('✗ FALHA DE COMUNICAÇÃO CRÍTICA', '#A8412A', 2500, () => {
+          showReveal(v.id, 
+            'O DADO É PERFEITO. A RESPOSTA É CEGA.', 
+            'O algoritmo funcionou de forma impecável. O risco foi calculado, o alerta foi processado e o dashboard no Centro de Operações ficou verde, indicando que o protocolo foi cumprido. Mas a "cidade inteligente" assume que a infraestrutura é universal. Na zona informal, não há sinal de internet estável, não há pacote de dados sobrando no fim do mês e as sirenes reais foram trocadas por dashboards caros. A tecnologia monitorou o desastre, mas não o evitou.', 
+            null);
+        });
+      }
+    });
+    container.appendChild(btn);
+  });
 
-  body.appendChild(container);
+  body.appendChild(container);
 }
 // V2 — Protocolo de Ratificação (Epistemicídio Computacional)
 function renderRatificacao(body, v, ch, color) {
