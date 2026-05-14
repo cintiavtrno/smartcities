@@ -2697,6 +2697,7 @@ function addFicha(v) {
     <div class="ficha-num">FICHA ${state.fichas.length} · VINHETA ${v.id}</div>
     <div class="ficha-quote">${v.ficha.texto}</div>
     <div class="ficha-fonte">${v.ficha.fonte || ''}</div>
+  `;
   content.appendChild(card);
   const badge = document.getElementById('caderneta-badge');
   badge.textContent = state.fichas.length;
