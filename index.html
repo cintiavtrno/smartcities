@@ -744,7 +744,7 @@ footer{
     <div class="prol-h1" style="font-size:clamp(18px,3vw,32px);">A CIDADE INTELIGENTE</div>
     <div class="prol-sub" style="max-width:440px;text-align:center;margin-bottom:28px;line-height:1.6;">
       Esta prancha documenta o que o decreto não descreve.<br>
-      Explore as 8 vinhetas. Cada uma guarda um desafio.<br>
+      Explore as 9 vinhetas. Cada uma guarda um desafio.<br>
       Consulte a <strong>linha do tempo</strong> para o contexto histórico.<br>
       Nenhuma escolha é inocente.
     </div>
@@ -762,7 +762,7 @@ footer{
       <div class="header-icon">▣</div>
       <div>
         <div class="header-title">A CIDADE INTELIGENTE</div>
-        <div class="header-sub">OITO VINHETAS · UMA PRANCHA · ESC. INDETERMINADA</div>
+        <div class="header-sub">NOVE VINHETAS · UMA PRANCHA · ESC. INDETERMINADA</div>
       </div>
     </div>
     <div class="header-right">
@@ -1058,7 +1058,7 @@ footer{
     <div class="footer-btns" id="footer-btns"></div>
     <div class="footer-count">
       <span class="count-label">VISITADAS</span>
-      <span class="count-num" id="count-num">0/8</span>
+      <span class="count-num" id="count-num">0/9</span>
     </div>
   </footer>
 </div>
@@ -1231,7 +1231,8 @@ const HOTSPOT_POS = [
   {id:5,x:710,y:345,cor:'brick'},
   {id:6,x:495,y:130,cor:'mustard'},
   {id:7,x:350,y:285,cor:'blue'},
-  {id:8,x:350,y:110,cor:'olive'} 
+  {id:8,x:350,y:110,cor:'olive'},
+  {id:9, x:250, y:380, cor:'mustard'}
 ];
 
 const FIO_PARES = [
@@ -1306,7 +1307,7 @@ const VINHETAS = [
     },
     ficha:{texto:'"A cidade inteligente frequentemente otimiza o que é quantificável e espetacular (o VLT, o BRT) às custas dos fluxos rotineiros e invisíveis da classe trabalhadora."'}
   },
-    {
+  {
     id:2, titulo:'CÂMERA Nº 0834-B', subtitulo:'Largo histórico · 14h22',
     cor:'brick', cena:'Marcus, 16, atravessa a praça.',
     paragrafos:[
@@ -1434,6 +1435,50 @@ const VINHETAS = [
       instrucao:'Audite o relatório de disparos do Centro de Operações e verifique a taxa de entrega na área de risco.'
     },
     ficha:{texto:'"O solucionismo pressupõe que problemas estruturais complexos, como habitação e infraestrutura, podem ser resolvidos com aplicativos, ignorando quem possui meios materiais para acessar a solução."'}
+  },
+  {
+    id: 9, 
+    titulo: 'SENSOR CLIMÁTICO · SETOR BRT', 
+    subtitulo: 'Avenida recém-concretada · 14h00',
+    cor: 'mustard', 
+    cena: 'O termômetro digital do totem marca 38,5°C.',
+    paragrafos: [
+      'Onde antes havia um sombreiro com décadas de idade, agora há uma via expressa, uma vala de cabos de fibra óptica e um "Totem Sustentável" com painel solar e entrada USB.',
+      'O sensor IoT de qualidade do ar detecta que a temperatura na avenida subiu 4 graus desde o ano passado e a umidade despencou. O sistema gera um alerta de "Ilha de Calor" no dashboard da prefeitura.',
+      'Para a infraestrutura da cidade inteligente, árvores reais são variáveis instáveis: galhos tapam a visão das câmeras de reconhecimento facial e raízes rompem o cabeamento subterrâneo. O concreto, por outro lado, é perfeitamente legível para a máquina.'
+    ],
+    rodape: '↳ Greenwashing e Solucionismo. · A tecnologia monitora o dano que a própria obra causou.',
+    asterisco: '* O totem possui um certificado "Smart Eco-Friendly" emitido pela fabricante.',
+    challenge: {
+      tipo: 'decisao',
+      instrucao: 'O Centro de Operações recebe o alerta térmico (38,5°C) no corredor do BRT. O algoritmo de resiliência climática exige uma ação de mitigação imediata. Selecione a intervenção:',
+      opcoes: [
+        {id: 'a', label: 'REFLORESTAR CANTEIRO CENTRAL', sub: 'Plantio de árvores de grande porte nativas'},
+        {id: 'b', label: 'INSTALAR "ÁRVORES SOLARES"', sub: 'Estruturas de metal com Wi-Fi e placas fotovoltaicas'},
+        {id: 'c', label: 'TETO VERDE NOS PONTOS DE ÔNIBUS', sub: 'Plantas rasteiras sobre a cobertura de vidro'}
+      ],
+      revelar: {
+        a: {
+          titulo: 'OPERAÇÃO REJEITADA PELO SISTEMA', 
+          texto: 'Erro de compatibilidade estrutural. Raízes de grande porte ameaçam a integridade da malha de fibra óptica (840km) e as copas geram pontos cegos para as 1.900 câmeras do sistema Olho-Vivo. O plantio foi vetado pela Secretaria de Tecnologia.', 
+          toast: 'ALERTA: INTERFERÊNCIA NA REDE ÓPTICA'
+        },
+        b: {
+          titulo: 'SOLUÇÃO APROVADA · KPI ATINGIDO', 
+          texto: 'A prefeitura instala 20 totems metálicos chamados "Árvores Digitais". Eles não reduzem a temperatura ambiente nem geram sombra para os pedestres, mas contabilizam pontos nos relatórios internacionais de Cidades Inteligentes e geram dados de conexão Wi-Fi dos transeuntes.', 
+          toast: '✓ MÉTRICA DE INOVAÇÃO ATUALIZADA'
+        },
+        c: {
+          titulo: 'SOLUÇÃO APROVADA · MARKETING VERDE', 
+          texto: 'Os tetos de vidro das paradas ganham uma camada de grama sintética e suculentas. O impacto no calor do asfalto é nulo, mas a estética gera excelentes fotos institucionais. O termômetro na rua continua marcando 38,5°C, mas o relatório de sustentabilidade foi concluído com sucesso.', 
+          toast: '✓ FOTO INSTITUCIONAL GERADA'
+        }
+      }
+    },
+    ficha: {
+      texto: '"A cidade inteligente muitas vezes substitui a infraestrutura natural por simulacros tecnológicos. É a lógica de derrubar a árvore para instalar, no mesmo lugar, um sensor IoT que medirá a queda na qualidade do ar."', 
+      fonte: 'Crítica do Solucionismo Tecnológico · Evgeny Morozov'
+    }
   }
 ];
 
@@ -1567,7 +1612,7 @@ function renderFooter() {
     btn.addEventListener('click', () => openVinheta(v.id));
     container.appendChild(btn);
   });
-  document.getElementById('count-num').textContent = `${state.visited.size}/8`;
+  document.getElementById('count-num').textContent = `${state.visited.size}/9`;
 }
 
 function updateLegibilidade() {
@@ -1576,7 +1621,7 @@ function updateLegibilidade() {
   document.getElementById('leg-fill').style.width = stage.pct + '%';
   const el = document.getElementById('leg-status');
   el.textContent = stage.label;
-  el.classList.toggle('alert', n === 8);
+  el.classList.toggle('alert', n === 9);
 }
 
 function updateFioVermelho() {
@@ -1585,8 +1630,8 @@ function updateFioVermelho() {
     const both = par.ids.every(id => state.completed.has(id));
     document.getElementById(par.el).classList.toggle('show', both);
   });
-  // Label central só aparece quando todas 7 foram completadas
-  const all = state.completed.size === 8;
+  // Label central só aparece quando todas 9 foram completadas
+  const all = state.completed.size === 9;
   document.getElementById('fio-label').classList.toggle('show', all);
 }
 // ════════════════════════════════════════
@@ -1672,7 +1717,7 @@ function closeModal() {
 }
 
 function checkFim() {
-  if (state.visited.size === 8) {
+  if (state.visited.size === 9) {
     document.getElementById('fim-fichas').textContent = state.fichas.length;
     setTimeout(() => document.getElementById('fim-overlay').classList.add('show'), 600);
   }
