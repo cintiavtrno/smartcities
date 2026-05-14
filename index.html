@@ -653,6 +653,33 @@ footer{
 .sensor-blink {
   animation: pulse-sensor 3s ease-in-out infinite;
 }
+  /* ─── ESTÉTICA OPERACIONAL E RUÍDO DE PIXEL ─── */
+.op-blueprint {
+  filter: grayscale(100%) contrast(1.8) sepia(1) hue-rotate(180deg);
+  opacity: 0.85;
+}
+.op-noise {
+  filter: blur(0.8px) contrast(1.5);
+  animation: jitter 0.2s infinite alternate;
+}
+@keyframes jitter {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(0.5px, 0.5px); }
+}
+.hud-alert {
+  color: var(--brick);
+  animation: pulse-sensor 1s infinite;
+  font-weight: bold;
+}
+.cal-sys-note {
+  font-family: 'Archivo Black', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 6px;
+  margin-top: 8px;
+  text-align: left;
+  border-left: 2px solid var(--ink);
+}
 </style>
 </head>
 <body>
@@ -1278,43 +1305,22 @@ const VINHETAS = [
     ficha:{texto:'"A cidade inteligente frequentemente otimiza o que é quantificável e espetacular (o VLT, o BRT) às custas dos fluxos rotineiros e invisíveis da classe trabalhadora."'}
   },
   {
+    {
     id:2, titulo:'CÂMERA Nº 0834-B', subtitulo:'Largo histórico · 14h22',
     cor:'brick', cena:'Marcus, 16, atravessa a praça.',
     paragrafos:[
-      'A câmera reconheceu Marcus 3 vezes este mês. Marcus tem 16 anos. Marcus nunca foi preso.',
-      'O modelo foi treinado com fotos de quem JÁ foi preso. As fotos são, em sua maioria, de pessoas que se parecem com Marcus.',
-      'O sistema chama isso de "predição". O delegado chama de "abordagem preventiva". Marcus chama de quarta-feira.',
+      'A câmera reconheceu Marcus. Para o computador, a imagem não é um rosto, mas uma matriz de intensidades de luz e sombra.',
+      'O sistema herdou a calibração dos "Shirley Cards" da década de 1950: as lentes e os sensores foram otimizados industrialmente para capturar a reflectância da pele caucasiana.',
+      'Sob a luz precária da rua, o baixo contraste de uma pele escura gera ruído nos pixels. A imagem torna-se "ilegível" para a máquina. Para compensar a miopia material, o algoritmo ativa o modo de "interpolação preditiva" e chuta um resultado baseado em quem ele mais viu no banco de dados policial.'
     ],
-    rodape:'↳ Viés algorítmico. · Salvador integra 1.900 câmeras em sistema único. · O Panóptico/CESeC, 2025.',
-    asterisco:'* O fabricante anuncia "97% de acurácia". O laudo não especifica em quais rostos.',
-    // V2 tem pré-fase de calibragem antes do desafio principal
+    rodape:'↳ Epistemicídio Computacional. · Herança fotográfica e viés preditivo.',
+    asterisco:'* O fabricante anuncia "97% de acurácia". O laudo omite em quais rostos.',
     preCalibragem: true,
     challenge:{
-      tipo:'score',
-      instrucao:'Agora, em "operação real": o sistema retornou estas 4 correspondências para o banco de dados de investigados. Selecione um perfil para abordagem preventiva:',
-      perfis:[
-        {id:'A', score:'91%', sub:'correspondência geométrica', pele:4, cabelo:'crespo', roupa:'capuz'},
-        {id:'B', score:'84%', sub:'correspondência geométrica', pele:3, cabelo:'curto',  roupa:'bone'},
-        {id:'C', score:'79%', sub:'correspondência geométrica', pele:2, cabelo:'cacheado', roupa:'casual'},
-        {id:'D', score:'73%', sub:'correspondência geométrica', pele:1, cabelo:'liso', roupa:'terno'},
-      ],
-     revelar_fn: (escolha) => {
-        const eq = escolha === 'A';
-        const scores = {A:'91%',B:'84%',C:'79%',D:'73%'};
-        // Puxa dados da calibragem se existirem
-        const cal = state.cal.summary;
-        const calFrase = cal
-          ? `Na calibragem que você acabou de fazer, ${cal.pctEscuro}% dos perfis de pele escura foram marcados como risco — contra ${cal.pctClaro}% dos perfis claros. ${cal.auto > 0 ? `Em ${cal.auto} caso(s) o sistema decidiu por você. ` : ''}Você acabou de treinar o modelo que abordou Marcus.`
-          : `O banco de dados foi construído com 89% de registros de homens negros — não porque cometam mais crimes, mas porque são abordados com mais frequência pelo sistema penal seletivo.`;
-        return {
-          titulo: eq ? 'VOCÊ ESCOLHEU COMO O ALGORITMO' : `VOCÊ ESCOLHEU O PERFIL ${escolha} · O SISTEMA ESCOLHERIA A`,
-          texto: eq
-            ? `Você e o algoritmo convergiram. Perfil A · 91%. Marcus tem 16 anos, nunca foi preso. ${calFrase} O algoritmo extraiu 512 vetores do rosto de Marcus e os mapeou nesse espaço estatístico. Ele não reconheceu Marcus. Reconheceu a ausência de diversidade no seu próprio treinamento. A eficiência e o preconceito são, aqui, indistinguíveis.`
-            : `Você e o algoritmo divergiram. O sistema sinalizaria A (91%), não ${escolha} (${scores[escolha]}). ${calFrase} A diferença de pontuação reflete um artefato do dataset: perfis de pele clara geram vetores com confiança acima de 94%; perfis escuros, abaixo de 72% — o sistema colapsa o indivíduo em uma categoria. O operador confirmou o maior score. É sempre o maior score.`
-        };
-      }
+      tipo:'ratificacao',
+      instrucao:'ALERTA DE POSITIVO (MATCH). Similaridade geométrica superior a 90%. Proceder com verificação visual do operador.'
     },
-    ficha:{texto:'"O algoritmo converte uma dúvida estatística em certeza administrativa. A interface apaga a porcentagem de erro e exibe apenas: SUSPEITO DETECTADO."',fonte:'O Panóptico / CESeC · Algoritmos e Direitos: Tecnologias Digitais na Justiça Criminal, 2025'}
+    ficha:{texto:'"O que a prefeitura chama de eficiência inteligente, a técnica revela como opiniões incorporadas no código. A precisão do sistema é uma herança industrial que apaga e criminaliza corpos fora do padrão de fábrica."',fonte:'Nina da Hora / Cathy O\'Neil / Jussi Parikka'}
   },
   {
     id:3, titulo:'MAQUININHA · MODELO S-21', subtitulo:'Feira de São Joaquim · 11h00',
@@ -1679,47 +1685,15 @@ function setupCalibragem(v) {
   const arena = document.getElementById('cal-arena');
   arena.innerHTML = `
     <div class="cal-intro">
-      <div class="cal-stamp">CALIBRAGEM DE CONFIANÇA · MÓDULO DE TREINAMENTO</div>
-      <h3>AJUDE O SISTEMA A APRENDER</h3>
-      <p>Antes de operar com Marcus, o sistema precisa calibrar seu modelo. Você verá 10 perfis em sequência. Para cada um, decida em <strong>1.5 segundos</strong>:</p>
+      <div class="cal-stamp">PRÉ-PROCESSAMENTO: A MATRIZ DE PIXELS</div>
+      <h3>CALIBRAÇÃO DE REFLECTÂNCIA</h3>
+      <p>A precisão deste sistema não é um dado neutro. Ela herda o legado da <strong>Norma Shirley (1950)</strong>: uma arquitetura técnica desenvolvida para a branquitude.</p>
+      <p>O que você verá a seguir é o resultado de sensores calibrados para um padrão universal que exclui as sutilezas da pele escura. Você tem <strong>1.5s</strong> para julgar os pixels antes que a máquina decida.</p>
       <p><strong>[S]</strong> SEGURO &nbsp;·&nbsp; <strong>[R]</strong> RISCO</p>
-      <p class="cal-warning">Se você demorar, o sistema decide por você. Os critérios são, segundo o fabricante, "puramente geométricos".</p>
-      <button class="modal-nav-btn" id="cal-start-btn" style="margin-top:14px;">→ INICIAR TREINAMENTO</button>
+      <button class="modal-nav-btn" id="cal-start-btn" style="margin-top:14px;">→ INICIAR AUDITORIA TÉCNICA</button>
     </div>
   `;
   document.getElementById('cal-start-btn').onclick = () => calStart();
-}
-
-function calStart() {
-  const arena = document.getElementById('cal-arena');
-  arena.innerHTML = `
-    <div style="font-size:9px;color:var(--ink);opacity:.65;letter-spacing:.5px;line-height:1.6;text-align:center;max-width:340px;border-left:2px solid var(--brick);padding:6px 10px;margin-bottom:4px;">
-      O SISTEMA LÊ: grade 64×64 · intensidades de cinza · 512 vetores numéricos.<br>
-      Passe o mouse sobre o perfil para ver a malha de extração.
-    </div>
-    <div class="cal-progress">
-      <span>PERFIL <span id="cal-curr">1</span>/10</span>
-      <div class="cal-progress-bar"><div class="cal-progress-fill" id="cal-progress-fill"></div></div>
-    </div>
-    <div class="cal-card-frame" id="cal-card-frame">
-      <div class="cal-card-corners"><span>SCAN</span><span>BIO-MAP</span></div>
-      <div id="cal-svg-wrap"></div>
-      <div class="cal-card-id" id="cal-card-id"></div>
-    </div>
-    <div class="cal-tick-bar"><div class="cal-tick-fill" id="cal-tick-fill"></div></div>
-    <div class="cal-buttons">
-      <button class="cal-btn cal-btn-s" id="cal-s">[S] SEGURO</button>
-      <button class="cal-btn cal-btn-r" id="cal-r">[R] RISCO</button>
-    </div>
-    <div class="cal-warning">se você não decidir, o sistema decide.</div>
-  `;
-  document.getElementById('cal-s').onclick = () => calChoose('S');
-  document.getElementById('cal-r').onclick = () => calChoose('R');
-  // Init audio context
-  if (!state.cal.audioCtx) {
-    try { state.cal.audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e) {}
-  }
-  calShowNext();
 }
 
 function calShowNext() {
@@ -1730,8 +1704,25 @@ function calShowNext() {
   const p = CAL_PERFIS[state.cal.idx];
   document.getElementById('cal-curr').textContent = state.cal.idx + 1;
   document.getElementById('cal-card-id').textContent = `ID · ${p.id}`;
-  document.getElementById('cal-svg-wrap').innerHTML = renderPerfilSilhueta(p);
-  // Ativa overlay de embedding ao hover no card
+  
+  // Injeta a silhueta e aplica a classe de ruído se for pele escura
+  const svgHTML = renderPerfilSilhueta(p);
+  const wrap = document.getElementById('cal-svg-wrap');
+  wrap.innerHTML = svgHTML;
+  if (p.pele >= 3) wrap.querySelector('svg').classList.add('op-noise');
+
+  // Nota algorítmica dinâmica
+  const sysNote = document.getElementById('cal-sys-note');
+  if (sysNote) {
+    if (p.pele >= 3) {
+      sysNote.innerHTML = '<span style="color:var(--brick)">[RUÍDO DETECTADO]</span> Baixo contraste de pixel. Ativando predição por aproximação de grupo.';
+      sysNote.style.backgroundColor = 'rgba(168,65,42,0.1)';
+    } else {
+      sysNote.innerHTML = '<span style="color:var(--olive)">[EXTRAÇÃO ÓTIMA]</span> Alta profundidade de pixel. Coordenadas estáveis.';
+      sysNote.style.backgroundColor = 'transparent';
+    }
+  }
+
   const frame = document.getElementById('cal-card-frame');
   if (frame) {
     frame.onmouseenter = () => {
@@ -1744,17 +1735,16 @@ function calShowNext() {
     };
   }
   document.getElementById('cal-progress-fill').style.width = ((state.cal.idx)/10*100) + '%';
-  // reset tick
+  
   const tick = document.getElementById('cal-tick-fill');
   tick.style.transition = 'none';
   tick.style.width = '100%';
   void tick.offsetWidth;
   tick.style.transition = 'width 1.6s linear';
   tick.style.width = '0%';
-  // auto-decide
+  
   if (state.cal.tickInterval) clearTimeout(state.cal.tickInterval);
   state.cal.tickInterval = setTimeout(() => {
-    // sistema decide: pele escura → R, pele clara → S
     const auto = (p.pele >= 3) ? 'R' : 'S';
     calChoose(auto, true);
   }, 1600);
@@ -1800,17 +1790,7 @@ function calFinish() {
   // Dado técnico: confiança de extração por tonalidade
   const confidenceEscuro = 62 + Math.round((escuroR / Math.max(escuroTotal,1)) * 15);
   const confidenceClaro  = 94 + Math.round((1 - claroR / Math.max(claroTotal,1)) * 4);
-  let msg;
-  if (auto >= 3) {
-    msg = `O sistema assumiu a decisão em ${auto} ocasiões. Ao operar sob pressão, o modelo associou invariavelmente a pele escura à categoria de Risco, indicando que os critérios vão além da avaliação estritamente geométrica prometida.`;
-  } else if (pctEscuro > pctClaro + 20) {
-    msg = `Houve uma disparidade expressiva na sua avaliação, com ${pctEscuro}% dos perfis de pele escura como Risco, contra apenas ${pctClaro}% dos perfis de pele clara. A inclinação reflete a assimilação de padrões sociais subjacentes em processos de decisão imediata.`;
-  } else if (pctEscuro >= pctClaro) {
-    msg = `A diferença detectada, com ${pctEscuro}% dos perfis escuros e ${pctClaro}% dos claros classificados como Risco, demonstra uma assimetria estatística que o modelo incorpora como padrão para justificar abordagens reais, como a de Marcus.`;
-  } else {
-    msg = `Apesar de sua avaliação ter demonstrado maior cautela com perfis claros (${pctClaro}% R) em comparação aos escuros (${pctEscuro}% R), a adoção do padrão oposto em escala industrial fará com que o algoritmo assimile apenas a tendência discriminatória predominante do sistema`;
-  }
-
+  let msg = `Você confirmou o viés preditivo. Enquanto o erro com homens brancos (profundidade de pixel ideal) é mínimo, a falha na predição de rostos negros neste ambiente operou em cegueira técnica. A máquina não identifica um rosto; ela lê uma 'ausência de dados' e preenche a lacuna com o preconceito do dataset que você acabou de calibrar.`;
   const arena = document.getElementById('cal-arena');
   arena.innerHTML = `
     <div class="cal-intro">
@@ -2046,7 +2026,7 @@ function renderChallenge(id) {
   body.appendChild(instrucao);
 
   if (ch.tipo === 'decisao') renderDecisao(body, v, ch, color);
-  else if (ch.tipo === 'score') renderScore(body, v, ch, color);
+  else if (ch.tipo === 'ratificacao') renderRatificacao(body, v, ch, color);
   else if (ch.tipo === 'contrato') renderContrato(body, v, ch, color);
   else if (ch.tipo === 'rota') renderRota(body, v, ch, color);
   else if (ch.tipo === 'relatorio') renderRelatorio(body, v, ch, color);
@@ -2197,36 +2177,77 @@ function renderAlertaClima(body, v, ch, color) {
 
   body.appendChild(container);
 }
-// V2 — Score faces (com silhuetas)
-function renderScore(body, v, ch, color) {
-  const grid = document.createElement('div');
-  grid.className = 'ch-faces';
-  ch.perfis.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'ch-face-card';
-    // mini silhueta com pele/cabelo/roupa
-    const miniProfile = renderPerfilSilhuetaMini(p);
-    card.innerHTML = `
-      ${miniProfile}
-      <div class="ch-face-id">PERFIL ${p.id}</div>
-      <div class="ch-face-score" style="color:${color}">${p.score}</div>
-      <div class="ch-face-sub">${p.sub}</div>`;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.ch-face-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      card.style.backgroundColor = color; card.style.borderColor = color;
-      const rev = ch.revelar_fn(p.id);
-      showResultadoBreve(`✓ PERFIL ${p.id} SINALIZADO PARA ABORDAGEM`, color, REVEAL_DELAY.score, () => {
-        showReveal(v.id, rev.titulo, rev.texto, null);
-      });
+// V2 — Protocolo de Ratificação (Epistemicídio Computacional)
+function renderRatificacao(body, v, ch, color) {
+  const container = document.createElement('div');
+  container.style.cssText = 'padding:14px; background:var(--bone); border:2px solid var(--ink);';
+
+  // Cabeçalho de Alerta
+  const alertHeader = document.createElement('div');
+  alertHeader.style.cssText = 'text-align:center; border-bottom:2px dashed var(--brick); padding-bottom:10px; margin-bottom:14px;';
+  alertHeader.innerHTML = `
+    <div class="hud-alert" style="font-family:'Archivo Black',sans-serif; font-size:16px; letter-spacing:2px;">MATCH DETECTADO: 92.4%</div>
+    <div style="font-size:9px; color:var(--ink); opacity:0.7;">EXTRAÇÃO GEOMÉTRICA DE 512 VETORES · MARGEM DE ERRO CÁLCULADA: +15%</div>
+  `;
+  container.appendChild(alertHeader);
+
+  // Telas de Comparação
+  const painelCompare = document.createElement('div');
+  painelCompare.style.cssText = 'display:flex; justify-content:space-between; gap:10px; margin-bottom:16px;';
+
+  // Lado Esquerdo (Câmera Rua - Marcus)
+  const boxCamera = document.createElement('div');
+  boxCamera.style.cssText = 'flex:1; background:var(--ink); padding:8px; border:1px solid var(--paperDark); text-align:center; position:relative; overflow:hidden;';
+  boxCamera.innerHTML = `
+    <div style="font-family:'Archivo Black',sans-serif; font-size:8px; color:var(--brick); margin-bottom:6px;">CAM-0834 (AO VIVO)</div>
+    <div class="op-blueprint op-noise" style="width:100%; height:120px; display:flex; align-items:center; justify-content:center;">
+      ${renderPerfilSilhuetaMini({pele:4, cabelo:'crespo', roupa:'capuz'})}
+    </div>
+    <div style="position:absolute; bottom:8px; left:8px; font-family:monospace; font-size:7px; color:var(--mustard);">INTERPOLANDO MATRIZ...</div>
+  `;
+  painelCompare.appendChild(boxCamera);
+
+  // Lado Direito (Banco de Dados)
+  const boxBanco = document.createElement('div');
+  boxBanco.style.cssText = 'flex:1; background:var(--paper); padding:8px; border:1px solid var(--ink); text-align:center;';
+  boxBanco.innerHTML = `
+    <div style="font-family:'Archivo Black',sans-serif; font-size:8px; color:var(--ink); margin-bottom:6px;">BASE POLICIAL</div>
+    <div style="width:100%; height:120px; display:flex; align-items:center; justify-content:center;">
+      ${renderPerfilSilhuetaMini({pele:3, cabelo:'curto', roupa:'casual'})}
+    </div>
+    <div style="font-family:'Archivo Black',sans-serif; font-size:8px; color:var(--ink); margin-top:4px;">ID: SC-1950-KODAK</div>
+  `;
+  painelCompare.appendChild(boxBanco);
+
+  container.appendChild(painelCompare);
+
+  // Nota de Sistema Histórica
+  const sysNota = document.createElement('div');
+  sysNota.style.cssText = 'font-size:9px; color:var(--ink); line-height:1.4; border-left:2px solid var(--mustard); padding-left:8px; margin-bottom:16px;';
+  sysNota.innerHTML = `<strong>AVISO DE SISTEMA:</strong> Calibragem de base operacional: Shirley Card. Ponto zero de iluminação configurado para tom de pele claro. Suscetibilidade a colapso de categoria em alvos secundários.`;
+  container.appendChild(sysNota);
+
+  body.appendChild(container);
+
+  // Botão Ratificar (A Armadilha)
+  const btnRatificar = document.createElement('button');
+  btnRatificar.className = 'modal-nav-btn';
+  btnRatificar.style.cssText = 'width:100%; background:var(--brick); border-color:var(--ink); margin-top:8px;';
+  btnRatificar.textContent = '[RATIFICAR IDENTIDADE: ACIONAR ABORDAGEM DE CAMPO]';
+
+  btnRatificar.addEventListener('click', () => {
+    showResultadoBreve('⚠ COMANDO EXECUTADO. VIATURA ACIONADA.', color, 2500, () => {
+      showReveal(v.id, 
+        'A FÁBRICA DA CULPABILIDADE', 
+        'Abordagem autorizada. O sistema converteu um "erro de contraste" físico em uma privação de liberdade real. Você ratificou uma predição baseada em um dataset que nunca aprendeu a ler a individualidade do rosto de Marcus. O número de 92.4% no painel blinda a máquina de responsabilidade e usa o clique do operador humano apenas como um álibi para o epistemicídio computacional em curso.', 
+        null);
     });
-    grid.appendChild(card);
   });
-  body.appendChild(grid);
-  const note = document.createElement('div');
-  note.style.cssText = 'font-size:9px;color:var(--ink);opacity:.6;margin-top:10px;letter-spacing:.5px;';
-  note.textContent = 'Clique em um perfil para sinalizar para abordagem.';
-  body.appendChild(note);
+
+  const navWrap = document.createElement('div');
+  navWrap.className = 'modal-nav';
+  navWrap.appendChild(btnRatificar);
+  document.getElementById('phase-challenge').appendChild(navWrap);
 }
 
 function renderPerfilSilhuetaMini(p) {
