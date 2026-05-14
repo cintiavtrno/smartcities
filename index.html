@@ -830,7 +830,7 @@ footer{
 
         <!-- ════ CAMADA DE DADOS E GPS (VLT) ════ -->
         <!-- Se você colocou aquele código do passo anterior aqui embaixo, pode substituí-lo por este! -->
-        <g id="camada-fluxo">
+        <g id="camada-fluxo-gps">
           <!-- Linha base fantasma -->
           <line x1="0" y1="285" x2="1000" y2="285" stroke="#577387" stroke-width="4" opacity="0.15"/>
           <!-- Linha animada simulando transmissão GPS -->
@@ -1058,7 +1058,7 @@ footer{
     <div class="footer-btns" id="footer-btns"></div>
     <div class="footer-count">
       <span class="count-label">VISITADAS</span>
-      <span class="count-num" id="count-num">0/6</span>
+      <span class="count-num" id="count-num">0/8</span>
     </div>
   </footer>
 </div>
@@ -1212,15 +1212,17 @@ footer{
 const PALETA = {paper:'#EFE5CE',paperDark:'#DDD0B0',ink:'#1A1611',brick:'#A8412A',mustard:'#C89339',blue:'#577387',olive:'#5B6B3F',bone:'#F7EFD9'};
 
 const LEG_STAGES = [
-  {pct:0,  label:'INVISÍVEL'},
-  {pct:17, label:'DETECTADO'},
-  {pct:33, label:'MONITORADO'},
-  {pct:50, label:'PERFILADO'},
-  {pct:67, label:'CLASSIFICADO'},
-  {pct:83, label:'RASTREADO'},
-  {pct:100,label:'COMPLETAMENTE LEGÍVEL'}
+  {pct:0,   label:'INVISÍVEL'},
+  {pct:11,  label:'RASTREAMENTO INICIADO'},
+  {pct:22,  label:'DETECTADO'},
+  {pct:33,  label:'MONITORADO'},
+  {pct:44,  label:'MAPEADO'},
+  {pct:55,  label:'PERFILADO'},
+  {pct:66,  label:'CLASSIFICADO'},
+  {pct:77,  label:'PREVISTO'},
+  {pct:88,  label:'RASTREADO'},
+  {pct:100, label:'COMPLETAMENTE LEGÍVEL'}
 ];
-
 const HOTSPOT_POS = [
   {id:1,x:580,y:170,cor:'blue'},
   {id:2,x:155,y:310,cor:'brick'},
@@ -1695,6 +1697,38 @@ function setupCalibragem(v) {
   document.getElementById('cal-start-btn').onclick = () => calStart();
 }
 
+function calStart() {
+  const arena = document.getElementById('cal-arena');
+  arena.innerHTML = `
+    <div style="font-size:9px;color:var(--ink);opacity:.65;letter-spacing:.5px;line-height:1.6;text-align:center;max-width:340px;border-left:2px solid var(--brick);padding:6px 10px;margin-bottom:4px;">
+      O SISTEMA LÊ: grade 64×64 · intensidades de cinza · 512 vetores numéricos.<br>
+      Passe o mouse sobre o perfil para ver a malha de extração.
+    </div>
+    <div class="cal-sys-note" id="cal-sys-note">AGUARDANDO LEITURA DE MATRIZ...</div>
+    <div class="cal-progress">
+      <span>PERFIL <span id="cal-curr">1</span>/10</span>
+      <div class="cal-progress-bar"><div class="cal-progress-fill" id="cal-progress-fill"></div></div>
+    </div>
+    <div class="cal-card-frame" id="cal-card-frame">
+      <div class="cal-card-corners"><span>SCAN</span><span>BIO-MAP</span></div>
+      <div id="cal-svg-wrap"></div>
+      <div class="cal-card-id" id="cal-card-id"></div>
+    </div>
+    <div class="cal-tick-bar"><div class="cal-tick-fill" id="cal-tick-fill"></div></div>
+    <div class="cal-buttons">
+      <button class="cal-btn cal-btn-s" id="cal-s">[S] SEGURO</button>
+      <button class="cal-btn cal-btn-r" id="cal-r">[R] RISCO</button>
+    </div>
+    <div class="cal-warning">se você não decidir, o sistema decide.</div>
+  `;
+  document.getElementById('cal-s').onclick = () => calChoose('S');
+  document.getElementById('cal-r').onclick = () => calChoose('R');
+  
+  if (!state.cal.audioCtx) {
+    try { state.cal.audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e) {}
+  }
+  calShowNext();
+}
 function calShowNext() {
   if (state.cal.idx >= CAL_PERFIS.length) {
     calFinish();
@@ -2350,7 +2384,13 @@ function renderContrato(body, v, ch, color) {
   let secs = duracao;
   setTimeout(() => {
     const fill = document.getElementById('ch-timer-fill');
-    if (fill) { fill.style.width = '0%'; }
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      void fill.offsetWidth;
+      fill.style.transition = `width ${duracao}s linear`;
+      fill.style.width = '0%';
+    }
   }, 100);
   state.timerInterval = setInterval(() => {
     secs--;
@@ -2636,7 +2676,7 @@ function showReveal(id, titulo, texto, toast) {
     <div class="reveal-ficha">
       <div class="reveal-ficha-label">FICHA ${state.fichas.length + 1} · SERÁ ADICIONADA À CADERNETA</div>
       <div class="reveal-ficha-quote">${v.ficha.texto}</div>
-      <div class="reveal-ficha-fonte">${v.ficha.fonte}</div>
+      <div class="reveal-ficha-fonte">${v.ficha.fonte || ''}</div>
     </div>`;
   setModalPhase('reveal');
   if (toast) setTimeout(() => showToast(toast), 800);
@@ -2656,7 +2696,7 @@ function addFicha(v) {
   card.innerHTML = `
     <div class="ficha-num">FICHA ${state.fichas.length} · VINHETA ${v.id}</div>
     <div class="ficha-quote">${v.ficha.texto}</div>
-    <div class="ficha-fonte">${v.ficha.fonte}</div>`;
+    <div class="ficha-fonte">${v.ficha.fonte || ''}</div>
   content.appendChild(card);
   const badge = document.getElementById('caderneta-badge');
   badge.textContent = state.fichas.length;
